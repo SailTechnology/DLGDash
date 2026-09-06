@@ -1,0 +1,21 @@
+# Publish only DLGDash; local aircraft files, photos and other projects stay local.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/THIRD_PARTY_NOTICES.md
+!/docs/
+!/.github/
+!/scripts/
+/scripts/*
+!/scripts/edgetx/
+/scripts/edgetx/*
+!/scripts/edgetx/DLGDash/
+**/node_modules/
+**/.DS_Store
+**/*.luac
+**/profiles/
+**/diagnostics/
+**/.env*
+**/*.zip
+/scripts/edgetx/DLGDash/tests/reference/

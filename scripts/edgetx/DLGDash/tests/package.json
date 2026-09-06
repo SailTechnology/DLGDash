@@ -1,0 +1,11 @@
+{
+  "name": "dlg-dash-tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "test": "node fetch-reference-fonts.cjs && node run.cjs && node run.cjs --v16 && node run-mono.cjs --x9d && node run-mono.cjs", "build:language": "node build-language.cjs" },
+  "devDependencies": {
+    "fengari": "0.1.5",
+    "lz4js": "0.2.0",
+    "pngjs": "7.0.0"
+  }
+}

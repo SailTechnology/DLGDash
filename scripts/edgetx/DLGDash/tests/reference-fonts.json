@@ -1,0 +1,72 @@
+[
+  {
+    "sha256": "64ef8194c586ddd16b460ea9842a54086e0e31037803e9a2c843b92a34cdaf9b",
+    "source": "radio/src/fonts/lvgl/sml/lv_font_en_bold_STD.c",
+    "file": "lv_font_en_bold_STD.c"
+  },
+  {
+    "sha256": "533b167974d66e9a3832d2cdf7626aa9c5db6d8d47faa6e47121729d7086d545",
+    "source": "radio/src/fonts/lvgl/sml/lv_font_en_XXS.c",
+    "file": "lv_font_en_XXS.c"
+  },
+  {
+    "sha256": "3e20146ff05fe992bb7d1ad1d3d6b1f531417f99b3fb0cef3d59bc3f22403b2f",
+    "source": "radio/src/fonts/lvgl/sml/lv_font_en_XS.c",
+    "file": "lv_font_en_XS.c"
+  },
+  {
+    "sha256": "4c3a678cc9bc14ee86114aa155d82a903ca24d568323fd6286f41c842e8a05d9",
+    "source": "radio/src/fonts/lvgl/sml/lv_font_en_L.c",
+    "file": "lv_font_en_L.c"
+  },
+  {
+    "sha256": "22ed036bbe209dbb1b3b02b74e67cc0a2999432215f7aabfcfa72f44d390423c",
+    "source": "radio/src/fonts/lvgl/sml/lv_font_en_bold_XL.c",
+    "file": "lv_font_en_bold_XL.c"
+  },
+  {
+    "sha256": "758133667603d1faeeff431ad5fa84c46341b2b24cf8677a503f1d6adbde850e",
+    "source": "radio/src/fonts/lvgl/sml/lv_font_en_bold_XXL.c",
+    "file": "lv_font_en_bold_XXL.c"
+  },
+  {
+    "sha256": "a95771ef1f6dc6fafb748d43cb8b8a340f8b16f1a687bcb8278ef250df539950",
+    "source": "radio/src/fonts/lvgl/std/lv_font_en_bold_STD.c",
+    "file": "std/lv_font_en_bold_STD.c"
+  },
+  {
+    "sha256": "4cf73e85e0309c79f50f5aaed1151703dbad6b821232094a9c62ba2386311e34",
+    "source": "radio/src/fonts/lvgl/std/lv_font_en_XXS.c",
+    "file": "std/lv_font_en_XXS.c"
+  },
+  {
+    "sha256": "d2a4d7484197e6839da17f8a675eda6ef55eb0dde0d10725429ca9b0bafba8b8",
+    "source": "radio/src/fonts/lvgl/std/lv_font_en_XS.c",
+    "file": "std/lv_font_en_XS.c"
+  },
+  {
+    "sha256": "dd92605f08bc8f4c848ec3cf18ef9727aec410ec54ec6ec68309712108549cbc",
+    "source": "radio/src/fonts/lvgl/std/lv_font_en_L.c",
+    "file": "std/lv_font_en_L.c"
+  },
+  {
+    "sha256": "cc695aa102e27c0c3683be4c61f30030f79b9f94b17a66a1c7904326d50eeb39",
+    "source": "radio/src/fonts/lvgl/std/lv_font_en_bold_XL.c",
+    "file": "std/lv_font_en_bold_XL.c"
+  },
+  {
+    "sha256": "ebf4a64bbe7dea8bb04f94007d72ab8d09990408fa50a89a591cb5e04e56bdad",
+    "source": "radio/src/fonts/lvgl/std/lv_font_en_bold_XXL.c",
+    "file": "std/lv_font_en_bold_XXL.c"
+  },
+  {
+    "sha256": "dd97076db330831b5b9d84cd3a2f34b07bf63395be06861d1065edf91a2447d1",
+    "source": "radio/src/fonts/std/font_05x07.png",
+    "file": "mono-05x07.png"
+  },
+  {
+    "sha256": "18394e58e4f378311037adc5f7b682abac0728d1175bdf551972fe0231882a06",
+    "source": "radio/src/fonts/std/font_10x14.png",
+    "file": "mono-10x14.png"
+  }
+]
