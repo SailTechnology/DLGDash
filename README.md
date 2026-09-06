@@ -2,7 +2,7 @@
 
 DLG / F3K 遥控器飞行仪表：大计时器、电压与满充参考、发射/当前高度、四/六舵机输出、平滑高度曲线，以及按模型配置的升降提示音。
 
-[下载安装包](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0) · [完整中文使用说明](scripts/edgetx/DLGDash/README.md) · [发布记录](docs/RELEASE-v1.0.md)
+[下载安装包](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0) · [新手逐步安装教程](docs/INSTALL-BEGINNER.md) · [全部设置说明](scripts/edgetx/DLGDash/README.md) · [发布记录](docs/RELEASE-v1.0.md)
 
 | 首批遥控器 | 分辨率 | 入口 | 状态 |
 | --- | --- | --- | --- |
@@ -27,11 +27,15 @@ DLG / F3K 遥控器飞行仪表：大计时器、电压与满充参考、发射/
 
 ### X9D / GX12
 
-![X9D 飞行总览](docs/images/x9d.png)
+黑白截图按整数倍放大，不做平滑插值；真实屏幕像素仍分别为 212×64 / 128×64。
 
-![GX12 飞行总览](docs/images/gx12.png)
+![X9D 飞行总览](docs/images/x9d-large.png)
 
-![GX12 六舵机输出](docs/images/gx12-servos.png)
+![GX12 飞行总览](docs/images/gx12-large.png)
+
+![GX12 六舵机输出](docs/images/gx12-servos-large.png)
+
+![GX12 中文设置](docs/images/gx12-settings-large.png)
 
 ## 安装前必读
 

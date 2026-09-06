@@ -59,6 +59,7 @@ end
 local P = loadScript("/WIDGETS/DLGDash/profile.lua")()
 local C = loadScript("/WIDGETS/DLGDash/core.lua")()
 local D = loadScript("/WIDGETS/DLGDash/mono-ui.lua")()
+__begin("font-sentinel"); D.text("1.i", 0, 0, 30, false, false); __fontRegression(); __end()
 local Settings = loadScript("/WIDGETS/DLGDash/settings.lua")(P, D)
 local cfg, key = P.defaults(), P.identity()
 eq(cfg.toneSource, ""); eq(cfg.resetSource, ""); eq(cfg.launchMode, 2)

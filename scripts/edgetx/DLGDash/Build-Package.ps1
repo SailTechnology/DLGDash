@@ -17,6 +17,8 @@ Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLGSetup.lua') -Destination $to
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLG.lua') -Destination $telemetry -Force
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'README.md') -Destination $sd -Force
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\THIRD_PARTY_NOTICES.md') -Destination $sd
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\docs\INSTALL-BEGINNER.md') -Destination $sd
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\docs\images') -Destination $sd -Recurse
 $files = @(Get-ChildItem -LiteralPath $sd -Recurse -File)
 foreach ($file in $files) {
     $relative = [IO.Path]::GetRelativePath($sd, $file.FullName)

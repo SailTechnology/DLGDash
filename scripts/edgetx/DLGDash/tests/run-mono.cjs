@@ -41,10 +41,17 @@ expose('__text', () => {
   [...text].forEach((ch, i) => {
     const code = ch.charCodeAt(0); assert(code >= 32 && code <= 126);
     const tile = code - 32, ox = tile % 16 * fw, oy = Math.floor(tile / 16) * (large ? 16 : 8);
+    const sentinel = Array.from({ length: fw }, (_, xx) => {
+      for (let yy = 0; yy < (large ? 16 : 8); yy++) {
+        const p = ((oy + yy) * source.width + ox + xx) * 4;
+        if (source.data[p] >= 128 || source.data[p + 1] >= 128 || source.data[p + 2] >= 128) return false;
+      }
+      return true;
+    });
     for (let yy = 0; yy < fh; yy++) for (let xx = 0; xx < fw; xx++) {
       const p = ((oy + yy) * source.width + ox + xx) * 4;
       // The firmware's sentinel columns are white when FIXEDWIDTH is set.
-      const black = source.data[p] < 128 && source.data[p + 1] < 128 && source.data[p + 2] < 128;
+      const black = !sentinel[xx] && source.data[p] < 128 && source.data[p + 1] < 128 && source.data[p + 2] < 128;
       if (black) pixel(x + i * (fw + 1) + xx, y + yy, true);
     }
   }); return 0;
@@ -81,6 +88,14 @@ expose('__end', () => {
   fs.writeFileSync(path.join(output, name + '.png'), PNG.sync.write(image));
   fs.writeFileSync(path.join(output, name + '.json'), JSON.stringify(commands, null, 2));
   frames.push(name + '.png'); image = undefined; return 0;
+});
+expose('__fontRegression', () => {
+  // Official 5x7 column bytes: '.' = ff ff 40 ff ff, 'i' = ff 44 7d 40 ff.
+  for (const x of [4, 6, 7, 9, 10, 12, 16]) for (let y = 0; y < 7; y++) {
+    assert.equal(image.data[(y * width + x) * 4], 255, 'FIXEDWIDTH must blank ff sentinel columns');
+  }
+  assert.equal(image.data[(6 * width + 8) * 4], 0, 'Decimal point is one dot, not a vertical bar');
+  return 0;
 });
 expose('loadScript', () => {
   const file = str(1).replace('/WIDGETS/DLGDash/', ''); assert(!file.includes('..'));

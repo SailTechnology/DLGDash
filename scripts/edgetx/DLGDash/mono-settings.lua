@@ -27,40 +27,40 @@ function S.run(s, event)
   D.text((s.dirty and "*" or "") .. s.page .. "/10", LCD_W - 42, 0, 42, false, false)
   if s.picker then
     local p = s.picker
-    local start = math.max(1, math.min(p.index - 1, #p.choices - 2))
-    for row = 0, 2 do
+    local start = math.max(1, math.min(p.index, #p.choices - 1))
+    for row = 0, 1 do
       local index = start + row
       if p.choices[index] then
-        if index == p.index then D.text(">", 0, 14 + row * 12, 6, false, false) end
-        D.text(p.choices[index].label, 7, 14 + row * 12, LCD_W - 8)
+        if index == p.index then D.text(">", 0, 17 + row * 16, 6, false, false) end
+        D.text(p.choices[index].label, 7, 17 + row * 16, LCD_W - 8)
       end
     end
   elseif page.diagnostic then
     H.diagnostics(s)
     local p = s.probe
-    D.text("SRC " .. H.voltageText((p.selectedField or {}).id or 0), 0, 14, LCD_W, false, false)
-    D.text("RxBt " .. H.voltageText("RxBt"), 0, 23, LCD_W, false, false)
-    D.text("ID " .. tostring((p.namedField or {}).id or "--"), 0, 32, LCD_W, false, false)
+    D.text("SRC " .. H.voltageText((p.selectedField or {}).id or 0), 0, 16, LCD_W, false, false)
+    D.text("RxBt " .. H.voltageText("RxBt"), 0, 26, LCD_W, false, false)
+    D.text("ID " .. tostring((p.namedField or {}).id or "--"), 0, 36, LCD_W, false, false)
   else
     local index = math.min(s.focus, #fields)
     local row = fields[index]
     if row then
-      D.text(row.label, 1, 14, LCD_W - 2)
-      D.text(H.rowLabel(s, row), 1, 29, LCD_W - 2)
-      if s.focus <= #fields then D.text(index .. "/" .. #fields, LCD_W - 24, 43, 24, false, false) end
+      D.text(row.label, 1, 17, LCD_W - 30)
+      D.text(s.message or H.rowLabel(s, row), 1, 33, LCD_W - 2)
+      if s.focus <= #fields then D.text(index .. "/" .. #fields, LCD_W - 24, 17, 24, false, false) end
     end
-    if s.page == 1 and not s.message then
+    if s.page == 1 and row and row.key == "voltage" and not s.message then
       local f = H.field(s.config.voltage)
-      D.text(H.voltageText(f and f.id or 0), 0, 43, LCD_W - 30, false, false)
+      D.text(H.voltageText(f and f.id or 0), 0, 42, LCD_W - 30, false, false)
     end
   end
-  if s.message and not s.picker then D.text(s.message, 0, 42, LCD_W - 30, false, false) end
+  if s.message and page.diagnostic and not s.picker then D.text(s.message, 0, 43, LCD_W, false, false) end
   local labels = s.picker and { "^", "v", "OK", "Back" } or { "<", ">", page.diagnostic and "Record" or "Save", "Exit" }
   for i, label in ipairs(labels) do
     local width = math.floor(LCD_W / 4)
     local x = (i - 1) * width
-    if not s.picker and s.focus == #fields + i then lcd.drawLine(x, 51, x + width - 2, 51, SOLID, 0) end
-    D.text(label, x + 1, 52, width - 2)
+    if not s.picker and s.focus == #fields + i then lcd.drawLine(x, 49, x + width - 2, 49, SOLID, 0) end
+    D.text(label, x + 1, 50, width - 2)
   end
 end
 return S

@@ -37,14 +37,19 @@ for (const [key, text] of Object.entries(phrases)) {
     fs.writeFileSync(path.join(output, `${name}_${size}.png`), canvas.toBuffer('image/png'));
   }
   const measure = createCanvas(1, 1).getContext('2d');
-  measure.font = '600 11px "DLG Chinese"';
-  const metrics = measure.measureText(text), height = 12;
-  const width = Math.ceil(Math.max(metrics.width, metrics.actualBoundingBoxRight)) + 2;
-  const mono = createCanvas(width, height), ctx = mono.getContext('2d');
+  measure.font = '400 13px "DLG Chinese"';
+  const metrics = measure.measureText(text), height = 14;
+  const canvasWidth = Math.ceil(Math.max(metrics.width, metrics.actualBoundingBoxRight)) + 2;
+  const mono = createCanvas(canvasWidth, height), ctx = mono.getContext('2d');
   ctx.font = measure.font;
-  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvasWidth, height);
   ctx.fillStyle = '#000'; ctx.fillText(text, 1, (height - metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2 + metrics.actualBoundingBoxAscent);
-  const pixels = ctx.getImageData(0, 0, width, height).data;
+  const pixels = ctx.getImageData(0, 0, canvasWidth, height).data;
+  let width = canvasWidth;
+  const threshold = 200;
+  while (width > 1 && Array.from({ length: height }, (_, y) => pixels[(y * canvasWidth + width - 1) * 4]).every(v => v >= threshold)) width--;
+  const ink = Array.from(pixels).filter((v, i) => i % 4 === 0 && v < threshold).length;
+  assert(ink > width * height * 0.08, text + ': monochrome strokes too faint');
   monoLines.push(`  [${JSON.stringify(key)}] = { "${name}", ${width} },`);
   // EdgeTX 2.11 drawPixmap accepts BMP files up to half the display width.
   for (let x = 0, part = 1; x < width; x += 64, part++) {
@@ -56,7 +61,7 @@ for (const [key, text] of Object.entries(phrases)) {
     bmp.writeUInt32LE(16, 46);
     for (let i = 0; i < 16; i++) bmp.fill(i * 17, 54 + i * 4, 57 + i * 4);
     for (let y = 0; y < height; y++) for (let xx = 0; xx < tileWidth; xx++) {
-      const level = pixels[(y * width + x + xx) * 4] < 170 ? 0 : 15;
+      const level = pixels[(y * canvasWidth + x + xx) * 4] < threshold ? 0 : 15;
       bmp[offset + (height - 1 - y) * stride + (xx >> 1)] |= level << (xx % 2 ? 0 : 4);
     }
     fs.writeFileSync(path.join(monoOutput, `${name}_${part}.bmp`), bmp);

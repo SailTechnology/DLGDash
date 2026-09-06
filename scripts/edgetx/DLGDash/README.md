@@ -2,6 +2,8 @@
 
 作者：Sail。面向 DLG / F3K 的 EdgeTX 飞行仪表。
 
+第一次安装请先看包内 **INSTALL-BEGINNER.md**，或打开[图文新手安装教程](https://github.com/SailTechnology/DLGDash/blob/codex/v1.0/docs/INSTALL-BEGINNER.md)。本文是完整功能与设置参考。
+
 这是第一个公开版本，运行时版本号为 1.0.0。此前 PA01 私测版的 2.0.x 是内部编号，不表示公开版本退回旧功能；原有 DLG2/3/4/5 插件配置继续兼容。
 
 ## 1. 首批机型与前提
@@ -243,7 +245,9 @@ pnpm test
 
 渲染测试直接执行 Lua 绘制调用，用固件原生字体/位图检查越界和文字重叠，不是手工制作的概念图。结果输出到 `output/DLGDash-v1.0/verification-<radio>`；关键回调以 20,000 条 Lua 指令作保守检查。它们不等于完整 EdgeTX 模拟器，也不能证明实机运行内存、按键码、声音响度或射频更新率。
 
-中文资源来自 `tests/zh.json` 和 Noto Sans SC；重建需要 `@napi-rs/canvas` 0.1.100，通过 `DLG_CN_FONT` 指定 Noto 字体，运行 `pnpm build:language`。彩屏 PNG 有 14/17/21 三种行高，黑白屏使用 12 像素行高、每片不超过 64 像素宽的 BMP，遵守旧固件 drawPixmap 限制。常规测试直接使用已生成资源，不需要字体生成器。
+中文资源来自 `tests/zh.json` 和 Noto Sans SC；重建需要 `@napi-rs/canvas` 0.1.100，通过 `DLG_CN_FONT` 指定 Noto 字体，运行 `pnpm build:language`。彩屏 PNG 有 14/17/21 三种行高；黑白屏使用更细的 14 像素行高 BMP，每片不超过 64 像素宽，选择列表每屏两项，遵守旧固件 drawPixmap 限制。常规测试直接使用已生成资源，不需要字体生成器。
+
+早期电脑黑白预览曾把原生字体的 `0xff` 压缩占位列误画为黑线，导致小数点/数字看起来粘连；渲染器现按固件 FIXEDWIDTH 规则将这些列留白，并增加像素回归测试。文档提供整数倍放大图，不用模糊插值。这是预览修正，不是接收机或显示屏硬件故障诊断。
 
 打包在源码目录用 PowerShell 7 运行：
 
