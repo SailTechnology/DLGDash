@@ -83,7 +83,7 @@ eq(config.toneSource, "", "new V16 must not guess a sound switch")
 eq(config.resetSource, "", "new V16 must not guess a clear switch")
 eq(config.launchMode, 2)
 local api = loadScript("/WIDGETS/DLGDash/main.lua")()
-eq(api.options[1][3], 0); eq(api.version, "1.0.0")
+eq(api.options[1][3], 0); eq(api.version, "1.0.1-beta.1")
 eq(P.save(key, config), true)
 sim.radio = "pa01"; eq(P.load(P.identity()), nil, "radio profiles are independent"); sim.radio = "v16"
 local function flight(servos, language)

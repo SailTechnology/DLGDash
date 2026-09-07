@@ -1,52 +1,54 @@
-# DLGDash v1.0 · Sail
+# DLGDash
 
-DLG / F3K 遥控器飞行仪表：大计时器、电压与满充参考、发射/当前高度、四/六舵机输出、平滑高度曲线，以及按模型配置的升降提示音。
+DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、四/六路舵量、历史曲线和升降提示音。
 
-[下载安装包](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0) · [新手逐步安装教程](docs/INSTALL-BEGINNER.md) · [全部设置说明](scripts/edgetx/DLGDash/README.md) · [发布记录](docs/RELEASE-v1.0.md)
+[从零安装](docs/INSTALL-BEGINNER.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.1) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
 
-| 首批遥控器 | 分辨率 | 入口 | 状态 |
-| --- | --- | --- | --- |
-| PA01 | 320×240 | 彩屏 Widget | 主开发机型，发布版需复验 |
-| HelloRadio V16 | 480×272 | 彩屏 Widget | 实验适配 |
-| FrSky X9D 系列 | 212×64 | 黑白遥测脚本 | 实验适配 |
-| RadioMaster GX12 | 128×64 | 黑白遥测脚本 | 实验适配 |
+**Zorro 用户请下载 v1.0.1-beta.1 的 `DLGDash-v1.0.1-beta.1.zip`。此版包含旧固件兼容修复，仍需先在地面验证；原 v1.0 不包含这些修复。**
 
-以 EdgeTX 2.11.3 为接口/字体测试基准。实验适配通过离线测试，**未经过这些机型的实机验收**，不承诺 OpenTX 或其他固件兼容。
+## 选择你的遥控器
 
-## 界面
+| 遥控器 | 安装到哪里 | 当前状态 |
+| --- | --- | --- |
+| PA01 | 彩屏主屏，添加 DLGDash 控件 | 有前期实机反馈，更新后需复查 |
+| HelloRadio V16 | 彩屏主屏，添加 DLGDash 控件 | 实验适配 |
+| FrSky X9D / X9D Plus / Plus 2019 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
+| RadioMaster GX12 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
+| RadioMaster Zorro | 模型的 Display 页面，选择 Script → DLG | 新增旧版 EdgeTX 兼容测试 |
 
-下图为执行真实 Lua 绘制代码生成的测试画面，使用 EdgeTX 原生字体；数据为模拟数据，不是飞行实测。
+先在 SYS → VERSION 查看 **EdgeTX 版本**，不要把 ELRS 版本当作系统版本。Zorro 的 EdgeTX 2.7.1 已加入兼容测试，不要求为了试用先刷固件。OpenTX、Ethos 尚未验证。
 
-### PA01
+## 安装顺序
 
-![PA01 仪表](docs/images/pa01.png)
+1. 把遥控器内容盘完整备份到电脑。
+2. 解压安装包，把 **SD 文件夹里面的内容**复制到遥控器内容盘根目录。
+3. 安全弹出并重启，按上表添加显示页面。
+4. 打开 DLG Setup，设置电压、高度、计时器、发射模式、舵机通道和按钮。
+5. 保存，完成地面检查后再使用。
 
-### V16
+每一步的按键、文件位置和检查方法都在[新手教程](docs/INSTALL-BEGINNER.md)。
 
-![V16 仪表](docs/images/v16.png)
+## 界面预览
 
-### X9D / GX12
+以下为模拟数据画面。
 
-黑白截图按整数倍放大，不做平滑插值；真实屏幕像素仍分别为 212×64 / 128×64。
+![PA01 飞行仪表](docs/images/pa01.png)
+
+![V16 飞行仪表](docs/images/v16.png)
 
 ![X9D 飞行总览](docs/images/x9d-large.png)
 
 ![GX12 飞行总览](docs/images/gx12-large.png)
 
-![GX12 六舵机输出](docs/images/gx12-servos-large.png)
+![黑白屏六舵机页面](docs/images/gx12-servos-large.png)
 
-![GX12 中文设置](docs/images/gx12-settings-large.png)
+![黑白屏中文设置](docs/images/gx12-settings-large.png)
 
-## 安装前必读
+## 使用前注意
 
-先备份 MODELS、RADIO 和已有插件配置。安装包只含插件，不含任何人的模型、诊断记录或固件。彩屏添加 DLGDash Widget；黑白屏在 Display 中选择 Script / DLG。逐个模型核对电压源、Zoom 模式、通道和按钮，详见完整说明。
-
-所有飞行配置只读；仅添加显示页面需要用户在 EdgeTX 内保存页面配置。V16 / X9D / GX12 默认不绑定声音和清零按钮。主屏右上角署名 Sail，彩屏全屏时保留 SET 设置入口。
-
-**在保持控制链路可靠、接收机兼容的前提下，ELRS 遥测回传频率应尽可能高。** 调整的是 Packet Rate 与 Telem Ratio 的配合，不是盲目追求最高控制包率；不要在飞行中改包率。插件不改变 ELRS 设置，平滑不能还原未回传的测量。参见 [ELRS 官方说明](https://www.expresslrs.org/quick-start/transmitters/lua-howto/#packet-rate-and-telemetry-ratio)。
-
-## 开发
-
-进入 `scripts/edgetx/DLGDash/tests`，执行 `pnpm install --frozen-lockfile` 和 `pnpm test`。首次测试下载并校验官方参考字体。运行 `Build-Package.ps1` 生成干净安装 ZIP；具体步骤和测试边界见使用说明。
-
-中文位图使用 Noto Sans SC，许可证随包提供。第三方资源说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。本项目未另行指定原创代码的开源许可证。
+- 安装不会改动混控、舵机方向、行程或射频参数。添加显示页面后，遥控器会保存该页面设置。
+- 首次使用先选择自己模型的电压源、Zoom 模式和通道，不要照搬别人的绑定。
+- 旧固件的提示音跟随遥控器总音量；舵量页标为 **MIX** 时表示混控量，不是最终舵机输出。
+- 旧固件不能单独判断某个传感器是否过期；飞行前请核对原生遥测，接收机断电后仪表应显示失联并停音。
+- 在控制链路可靠的前提下，**尽可能提高 ELRS 的有效遥测回传率**。不要在飞行中改包率；不了解相关参数时先保留原来的可靠设置。
+- 仪表不代替原生低压告警、失控保护或飞行安全判断。

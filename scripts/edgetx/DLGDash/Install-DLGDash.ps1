@@ -11,8 +11,8 @@ if (-not (Test-Path -LiteralPath $radioFile)) { throw 'Not an EdgeTX SD card' }
 $radioText = Get-Content -LiteralPath $radioFile -Raw
 if ($radioText -notmatch '(?m)^board:\s*([^\r\n]+)\s*$') { throw 'Radio board is missing' }
 $board = $Matches[1].Trim()
-if ($board -notin @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12')) { throw "Unsupported radio board: $board" }
-if ($board -ne 'pa01' -and -not $AllowExperimental) { throw 'V16/X9D/GX12 require explicit -AllowExperimental; ground validation is pending' }
+if ($board -notin @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'zorro')) { throw "Unsupported radio board: $board" }
+if ($board -ne 'pa01' -and -not $AllowExperimental) { throw 'Experimental radios require explicit -AllowExperimental; ground validation is pending' }
 $manifest = Get-Content -LiteralPath (Join-Path $backup 'manifest.json') -Raw | ConvertFrom-Json
 $flightFiles = @($manifest | Where-Object { $_.Path -like 'MODELS\*' -or $_.Path -like 'RADIO\*' })
 $profileFiles = @($manifest | Where-Object { $_.Path -like 'WIDGETS\DLGDash\profiles\*' })
@@ -31,7 +31,7 @@ if ($allFlight.Count -ne $flightFiles.Count) { throw 'Model/radio file set chang
 $widgetDir = Join-Path $card 'WIDGETS\DLGDash'
 $toolDir = Join-Path $card 'SCRIPTS\TOOLS'
 $telemetryDir = Join-Path $card 'SCRIPTS\TELEMETRY'
-$sources = @('profile.lua', 'core.lua', 'draw.lua', 'settings.lua', 'main.lua', 'locale.lua', 'diagnostics.lua', 'mono-ui.lua', 'mono-settings.lua', 'DLGSetup.lua', 'DLG.lua')
+$sources = @('compat.lua', 'profile.lua', 'core.lua', 'draw.lua', 'settings.lua', 'settings-pages.lua', 'color-settings.lua', 'main.lua', 'locale.lua', 'diagnostics.lua', 'mono-ui.lua', 'mono-settings.lua', 'DLGSetup.lua', 'DLG.lua')
 $languageRoot = Join-Path $PSScriptRoot 'lang'
 if (-not (Test-Path -LiteralPath (Join-Path $languageRoot 'zh.lua'))) { throw 'Missing Chinese language pack' }
 foreach ($file in Get-ChildItem -LiteralPath $languageRoot -Recurse -File) {
@@ -40,6 +40,7 @@ foreach ($file in Get-ChildItem -LiteralPath $languageRoot -Recurse -File) {
 foreach ($name in $sources) { if (-not (Test-Path -LiteralPath (Join-Path $PSScriptRoot $name))) { throw "Missing source: $name" } }
 New-Item -ItemType Directory -Path $widgetDir -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $widgetDir 'profiles') -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $widgetDir 'diagnostics') -Force | Out-Null
 New-Item -ItemType Directory -Path $toolDir -Force | Out-Null
 $installed = @()
 foreach ($name in $sources) {
@@ -63,7 +64,7 @@ foreach ($entry in @($flightFiles) + @($profileFiles)) {
     if ((Get-FileHash -LiteralPath (Join-Path $card $entry.Path) -Algorithm SHA256).Hash -ne $entry.SHA256) { throw "Model/radio verification failed: $($entry.Path)" }
 }
 $result = [pscustomobject]@{
-    Version = '1.0.0'
+    Version = '1.0.1-beta.1'
     Board = $board
     Card = $card
     Backup = $backup

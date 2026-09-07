@@ -1,6 +1,6 @@
 -- B&W API simulation deliberately provides no Bitmap, color or sizeText APIs.
-local radio
-radio, LCD_W = __radio()
+local radio, legacy
+radio, LCD_W, legacy = __radio()
 LCD_H, DBLSIZE, FIXEDWIDTH, SOLID, PLAY_BACKGROUND = 64, 1024, 16, 0, 4
 UNIT_VOLTS, UNIT_CELLS, UNIT_METERS, UNIT_FEET = 1, 15, 9, 10
 UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND = 5, 6
@@ -23,15 +23,21 @@ function getFieldInfo(value)
   end
 end
 function getTime() return sim.clock end
-function getVersion() return "2.11.3", radio, 2, 11, 3, "EdgeTX" end
+function getVersion() return legacy and "2.7.1" or "2.11.3", radio, 2, legacy and 7 or 11, legacy and 1 or 3, "EdgeTX" end
 function getFlightMode(index) index = index or sim.mode; return index, index == 2 and "Zoom" or "Cruise" end
 function getSourceValue(value)
   local f = getFieldInfo(value)
   if f then return sim[f.key], not f.unit or sim.current, not f.unit or sim.fresh end
   return nil, false, false
 end
-function getValue(value) return getSourceValue(value) end
+local sensorValue = getSourceValue
+function getValue(value)
+  if type(value) == "string" and string.match(value, "^ch%d+$") then return sim.output * 10.24 end
+  return sensorValue(value)
+end
+function getRSSI() return sim.current and 85 or 0 end
 function getOutputValue(index) return sim.output * 10.24 end
+if legacy then getSourceValue, getOutputValue = nil, nil end
 function playTone(...) sim.tones = sim.tones + 1 end
 function sources()
   local i = 0
@@ -115,11 +121,11 @@ for _, lang in ipairs({ 0, 1 }) do
   end
 end
 e.page, e.focus, e.message = 8, 1, nil
-Settings.run(e, EVT_VIRTUAL_ENTER); e.picker.index = 3; Settings.run(e, EVT_VIRTUAL_ENTER)
-eq(e.config.toneVolume, 1)
+Settings.run(e, EVT_VIRTUAL_ENTER); e.picker.index = legacy and 2 or 3; Settings.run(e, EVT_VIRTUAL_ENTER)
+eq(e.config.toneVolume, legacy and -1 or 1)
 e.focus = #e.pages[8].fields + 3
 budget("save settings", function() Settings.run(e, EVT_VIRTUAL_ENTER) end)
-eq(saved, true); eq(P.load(key).toneVolume, 1)
+eq(saved, true); eq(P.load(key).toneVolume, legacy and -1 or 1)
 Settings.run(e, EVT_VIRTUAL_EXIT); eq(closed, true)
 local api = loadScript("/WIDGETS/DLGDash/DLG.lua")()
 budget("cold init", api.init)
@@ -134,4 +140,14 @@ local tool = loadScript("/WIDGETS/DLGDash/DLGSetup.lua")()
 budget("standalone init", tool.init)
 __begin("standalone"); eq(tool.run(0), 0); __end()
 eq(tool.run(EVT_VIRTUAL_EXIT), 2)
+local modernSource, modernOutput, modernSources, savedValue = getSourceValue, getOutputValue, sources, getValue
+getSourceValue, getOutputValue, sources, getValue = nil, nil, nil, nil
+local originalLoader = loadScript
+local legacyTool = originalLoader("/WIDGETS/DLGDash/DLGSetup.lua")()
+loadScript = function() error("Old firmware must not load any runtime modules") end
+legacyTool.init()
+__begin("old-firmware"); eq(legacyTool.run(0), 0); __end()
+eq(legacyTool.run(EVT_VIRTUAL_EXIT), 2)
+loadScript = originalLoader
+getSourceValue, getOutputValue, sources, getValue = modernSource, modernOutput, modernSources, savedValue
 print("PASS " .. radio .. ": " .. count .. " assertions; simulation only, hardware validation pending")

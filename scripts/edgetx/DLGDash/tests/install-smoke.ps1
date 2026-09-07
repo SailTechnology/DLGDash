@@ -4,7 +4,7 @@ $source = Split-Path -Parent $PSScriptRoot
 $testRoot = Join-Path ([IO.Path]::GetTempPath()) ('DLGDash-install-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $testRoot | Out-Null
 $results = @()
-foreach ($board in @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12')) {
+foreach ($board in @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'zorro')) {
     $card = Join-Path $testRoot $board
     foreach ($dir in @('MODELS', 'RADIO', 'WIDGETS/DLGDash/profiles', 'SCRIPTS/TELEMETRY')) {
         New-Item -ItemType Directory -Path (Join-Path $card $dir) -Force | Out-Null
@@ -22,9 +22,12 @@ foreach ($board in @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12')) {
         $args.AllowExperimental = $true
     }
     $installed = (& (Join-Path $source 'Install-DLGDash.ps1') @args) | ConvertFrom-Json
-    if ($installed.Version -ne '1.0.0' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
+    if ($installed.Version -ne '1.0.1-beta.1' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
     if (Test-Path -LiteralPath (Join-Path $card 'SCRIPTS/TELEMETRY/DLG.luac')) { throw 'Old cache survived' }
     if (-not (Test-Path -LiteralPath (Join-Path $backup.Backup 'SCRIPTS/TELEMETRY/DLG.luac'))) { throw 'Old cache is not recoverable' }
+    foreach ($folder in @('profiles', 'diagnostics')) {
+        if (-not (Test-Path -LiteralPath (Join-Path $card ('WIDGETS/DLGDash/' + $folder)) -PathType Container)) { throw 'Legacy save folder is missing' }
+    }
     [IO.File]::AppendAllText((Join-Path $card 'MODELS/demo.yml'), 'changed')
     $rejected = $false
     try { & (Join-Path $source 'Install-DLGDash.ps1') @args | Out-Null } catch { $rejected = $_.Exception.Message -like '*fresh backup*' }

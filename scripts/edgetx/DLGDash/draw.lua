@@ -124,7 +124,7 @@ function D.dashboard(s, core, zone, fullscreen)
   local header, timerH, statsH = 20, 56, 70
   if wide then header, timerH, statsH = 24, h >= 260 and 70 or 56, h >= 260 and 82 or 70 end
   D.fill(x, y, w, header, c.band)
-  D.text("DLG " .. (s.modeName or "--"), x + 4, y, w - (wide and 198 or 170), header, c.text, BOLD)
+  D.text((s.profile.api.mixedOutputs and "MIX " or "DLG ") .. (s.modeName or "--"), x + 4, y, w - (wide and 198 or 170), header, c.text, BOLD)
   D.text(s.data.link and "LINK" or "LOST", x + w - (wide and 192 or 164), y, wide and 52 or 42, header, s.data.link and c.green or c.red, SMLSIZE)
   local audible = s.toneActive and s.config.toneVolume ~= -1
   D.text(audible and "BEEP" or "MUTE", x + w - (wide and 136 or 118), y, wide and 62 or 44, header, audible and c.green or c.muted, SMLSIZE)

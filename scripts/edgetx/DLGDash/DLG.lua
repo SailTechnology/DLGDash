@@ -12,8 +12,9 @@ local function bind()
 end
 local function init()
   if LCD_H ~= 64 or (LCD_W ~= 128 and LCD_W ~= 212) then unavailable = "Use color widget"; return end
-  if not getSourceValue or not getOutputValue or not sources then unavailable = "EdgeTX 2.11 required"; return end
+  if not getValue or not getFieldInfo or not sources then unavailable = "Lua APIs missing"; return end
   P = assert(loadScript(ROOT .. "profile.lua"))()
+  if collectgarbage then collectgarbage("collect") end
   C = assert(loadScript(ROOT .. "core.lua"))()
   D = assert(loadScript(ROOT .. "mono-ui.lua"))()
   bind()

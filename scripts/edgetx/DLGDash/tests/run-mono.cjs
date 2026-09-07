@@ -3,10 +3,11 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const { lua, lauxlib, lualib, to_luastring, to_jsstring } = require('fengari');
 const { PNG } = require('pngjs');
-const radio = process.argv.includes('--x9d') ? 'x9d' : 'gx12';
+const radio = process.argv.includes('--x9d') ? 'x9d' : process.argv.includes('--zorro') ? 'zorro' : 'gx12';
+const legacy = process.argv.includes('--legacy');
 const width = radio === 'x9d' ? 212 : 128, height = 64;
 const root = path.resolve(__dirname, '..');
-const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio);
+const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio + (legacy ? '-legacy' : ''));
 fs.mkdirSync(output, { recursive: true });
 const font = [PNG.sync.read(fs.readFileSync(path.join(__dirname, 'reference/mono-05x07.png'))), PNG.sync.read(fs.readFileSync(path.join(__dirname, 'reference/mono-10x14.png')))];
 const L = lauxlib.luaL_newstate(); lualib.luaL_openlibs(L);
@@ -29,9 +30,11 @@ function textBounds(b) {
   for (const a of bounds) assert(!(b.x < a.x + a.w && b.x + b.w > a.x && b.y < a.y + a.h && b.y + b.h > a.y), name + ': overlap ' + b.text + ' / ' + a.text);
   bounds.push(b); commands.push(b);
 }
-expose('__radio', () => { lua.lua_pushstring(L, to_luastring(radio)); lua.lua_pushinteger(L, width); return 2; });
+expose('__radio', () => { lua.lua_pushstring(L, to_luastring(radio)); lua.lua_pushinteger(L, width); lua.lua_pushboolean(L, legacy); return 3; });
 expose('__begin', () => { name = str(1); image = new PNG({ width, height }); image.data.fill(255); bounds = []; commands = []; return 0; });
 expose('__clear', () => { if (image) { image.data.fill(255); bounds = []; commands = []; } return 0; });
+// Fengari delegates memory to JS; the native memory runner exercises real GC.
+expose('collectgarbage', () => 0);
 expose('__text', () => {
   if (!image) return 0;
   const x = num(1), y = num(2), text = str(3), flags = num(4), large = (flags & 1024) !== 0;
@@ -99,7 +102,7 @@ expose('__fontRegression', () => {
 });
 expose('loadScript', () => {
   const file = str(1).replace('/WIDGETS/DLGDash/', ''); assert(!file.includes('..'));
-  assert(!['draw.lua', 'locale.lua', 'main.lua'].includes(file), 'Monochrome must not load color APIs');
+  assert(!['draw.lua', 'locale.lua', 'main.lua', 'color-settings.lua'].includes(file), 'Monochrome must not compile color renderers');
   const script = fs.readFileSync(path.join(root, file));
   if (lauxlib.luaL_loadbuffer(L, script, script.length, to_luastring('@' + file)) !== lua.LUA_OK) throw Error(str(-1));
   return 1;

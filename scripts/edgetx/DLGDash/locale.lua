@@ -1,5 +1,9 @@
 -- Chinese labels are bundled bitmaps, independent of the firmware language.
 local L = {}
+if not Bitmap or not Bitmap.toMask or not lcd.drawBitmapPattern then
+  function L.draw() return false end
+  return L
+end
 local labels = assert(loadScript("/WIDGETS/DLGDash/lang/zh.lua"))()
 local cache, order = {}, {}
 local function bitmap(id, size)

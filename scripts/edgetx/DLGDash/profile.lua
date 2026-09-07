@@ -1,5 +1,6 @@
 -- Per-radio/model settings. Never writes EdgeTX model or radio configuration.
 local P = { directory = "/WIDGETS/DLGDash/profiles/", schema = 5 }
+P.api = assert(loadScript("/WIDGETS/DLGDash/compat.lua"))()
 P.roles = { "LA", "RA", "ELE", "RUD", "LF", "RF" }
 P.windows = { 30, 60, 90, 120, 180, 300, 600 }
 P.periods = { 10, 20, 50, 100, 200, 500 }
@@ -74,9 +75,23 @@ end
 
 -- Table replacements avoid a Lua callback per byte during verified two-slot saves.
 local byteHex, hexByte = {}, {}
-for i = 0, 255 do
-  local char, code = string.char(i), string.format("%02x", i)
-  byteHex[char], hexByte[code] = code, char
+if LCD_H == 64 then
+  -- Small radios only retain the bytes actually present in their profiles.
+  setmetatable(byteHex, { __index = function(t, char)
+    local code = string.format("%02x", string.byte(char))
+    t[char] = code
+    return code
+  end })
+  setmetatable(hexByte, { __index = function(t, code)
+    local char = string.char(tonumber(code, 16))
+    t[code] = char
+    return char
+  end })
+else
+  for i = 0, 255 do
+    local char, code = string.char(i), string.format("%02x", i)
+    byteHex[char], hexByte[code] = code, char
+  end
 end
 local function hex(text) return (string.gsub(text, ".", byteHex)) end
 
@@ -173,9 +188,24 @@ function P.save(key, config)
   return true, revision + 1
 end
 
-function P.sourceList(kind)
-  local list = { { value = "", label = "None" } }
+local sourceChoices = {
+  __len = function(t) return #t.names end,
+  __index = function(t, index)
+    if type(index) ~= "number" or index < 1 or index > #t.names then return nil end
+    local name = t.names[index]
+    return { value = index == t.selectedIndex and t.selectedValue or name,
+      label = index == 1 and "None" or name, id = t.ids[index] }
+  end,
+  __ipairs = function(t)
+    return function(_, i) i = i + 1; if i <= #t then return i, t[i] end end, t, 0
+  end
+}
+function P.sourceList(kind, selected)
+  -- Compact columns avoid hundreds of permanently allocated option tables.
+  local list = setmetatable({ names = { "" }, ids = {}, selectedValue = selected,
+    selectedIndex = selected == "" and 1 or nil }, sourceChoices)
   if not sources then return list end
+  local current = P.field(selected)
   for id, name in sources() do
     local info = getFieldInfo(id)
     local unit = info and info.unit
@@ -191,7 +221,15 @@ function P.sourceList(kind)
         if base and info.id == base.id + (suffix == "+" and 2 or 1) then allowed = false end
       end
     end
-    if allowed and name and name ~= "" then list[#list + 1] = { value = name, label = name, id = id } end
+    if allowed and name and name ~= "" then
+      local index = #list.names + 1
+      list.names[index], list.ids[index] = name, id
+      if selected == name or current and current.id == id then list.selectedIndex = index end
+    end
+  end
+  if selected and not list.selectedIndex then
+    list.selectedIndex = #list.names + 1
+    list.names[list.selectedIndex] = selected .. " (missing)"
   end
   return list
 end

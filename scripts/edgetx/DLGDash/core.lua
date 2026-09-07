@@ -24,7 +24,7 @@ local function source(state, key)
   if not field then return nil, false end
   -- 在控制链路可靠的前提下，ELRS 遥测回传率应尽可能高；不是只提高发射包率。
   -- 本插件不修改 ELRS 参数，平滑不能恢复两次真实回传之间缺失的测量。
-  local value, current, fresh = getSourceValue(field.id)
+  local value, current, fresh = state.profile.api.value(field.id, field)
   -- isFresh describes packet age, not validity; slow sensors remain current.
   if current ~= true then return nil, false, false end
   if type(value) == "table" then return value, true, fresh == true end
@@ -196,7 +196,7 @@ local function updateTone(s)
     or clamp(cfg.sinkTone + speed * 45, math.max(150, cfg.sinkTone - 200), cfg.sinkTone - 30)
   local duration = math.floor((speed > 0 and 55 or 190) * scale + 0.5)
   -- EdgeTX 2.11 supports per-tone volume; never change global audio or flush alarms.
-  if cfg.toneVolume == 0 then
+  if cfg.toneVolume == 0 or not s.profile.api.toneVolume then
     playTone(math.floor(freq + 0.5), duration, 20, PLAY_BACKGROUND or 0, 0)
   else
     playTone(math.floor(freq + 0.5), duration, 20, PLAY_BACKGROUND or 0, 0, cfg.toneVolume)
@@ -237,7 +237,7 @@ function C.update(s)
   s.data.timer = timer and timer.value or nil
   for i = 1, s.config.servos do
     local ch = s.config["ch" .. i]
-    local raw = ch > 0 and getOutputValue(ch - 1) or nil
+    local raw = ch > 0 and s.profile.api.output(ch - 1) or nil
     s.data.channels[i] = finite(raw) and raw / 10.24 or nil
   end
   smoothGraph(s, altitude)

@@ -52,7 +52,7 @@ function D.dashboard(s, C, page)
   local w = LCD_W
   lcd.clear()
   D.language(s.config.language)
-  D.text(s.modeName or "DLG", 0, 0, w - 66, false, false)
+  D.text(page == 2 and s.profile.api.mixedOutputs and "MIX" or s.modeName or "DLG", 0, 0, w - 66, false, false)
   D.text(s.data.link and "LNK" or "---", w - 60, 0, 18, false, false)
   D.text(s.toneActive and s.config.toneVolume ~= -1 and "B" or "M", w - 36, 0, 6, false, false)
   D.text("Sail", w - 24, 0, 24, false, false)

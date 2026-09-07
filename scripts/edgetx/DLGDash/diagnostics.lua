@@ -12,7 +12,7 @@ local function number(value)
 end
 local function probe(request)
   if not request then return { current = false, fresh = false } end
-  local value, current, fresh = getSourceValue(request)
+  local value, current, fresh = P.api.value(request)
   return { value = number(value), current = current == true, fresh = fresh == true }
 end
 function T.voltage(probeValue)
