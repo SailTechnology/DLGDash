@@ -17,7 +17,7 @@ local function probe(request)
 end
 function T.voltage(probeValue)
   if not probeValue or not probeValue.current or not probeValue.value then return "--.--V" end
-  return string.format("%.2fV", probeValue.value)
+  return (string.format("%.2fV", probeValue.value))
 end
 function T.sample(config)
   local selected = P.field(config.voltage)
@@ -43,7 +43,7 @@ function T.row(s, config)
     s.byId.value or "", s.byId.current, s.byId.fresh, s.namedLegacy or "", centi(s.named.value),
     s.minimum.value or "", s.maximum.value or "", s.tx.value or "" }
   for i, value in ipairs(fields) do fields[i] = csv(value) end
-  return table.concat(fields, ",")
+  return (table.concat(fields, ","))
 end
 function T.save(key, rows)
   if not key or #rows ~= T.count then return false, "Incomplete record" end

@@ -1,11 +1,11 @@
 param(
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.2'),
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.3'),
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName,
     [ValidateSet('Universal', 'Zorro')][string]$Target = 'Universal'
 )
 $ErrorActionPreference = 'Stop'
 if (-not $PackageName) {
-    $PackageName = if ($Target -eq 'Zorro') { 'DLGDash-Zorro-v1.0.1-beta.2.zip' } else { 'DLGDash-v1.0.1-beta.2.zip' }
+    $PackageName = if ($Target -eq 'Zorro') { 'DLGDash-Zorro-v1.0.1-beta.3.zip' } else { 'DLGDash-v1.0.1-beta.3.zip' }
 }
 $output = [IO.Path]::GetFullPath($OutputDirectory)
 $stage = Join-Path $output ('package-' + [IO.Path]::GetRandomFileName())

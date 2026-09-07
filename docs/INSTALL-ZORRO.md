@@ -1,12 +1,12 @@
 # Zorro 专用版安装与更新
 
-适用 **RadioMaster Zorro、128×64 黑白屏、EdgeTX**。本次为 **v1.0.1-beta.2**，修复进入设置时报 `attempt to index field '_G' (a nil value)` 的问题。此版本仍需真机地面验证，不要求先升级 EdgeTX 或 ELRS。
+适用 **RadioMaster Zorro、128×64 黑白屏、EdgeTX**。本次为 **v1.0.1-beta.3**，包含进入设置时报 `attempt to index field '_G' (a nil value)` 的修复及旧固件兼容更新。此版本仍需真机地面验证，不要求先升级 EdgeTX 或 ELRS。
 
 ## 1. 下载专用安装包
 
-打开 [v1.0.1-beta.2 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.2)，展开 **Assets**，只下载：
+打开 [v1.0.1-beta.3 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3)，展开 **Assets**，只下载：
 
-**DLGDash-Zorro-v1.0.1-beta.2.zip**
+**DLGDash-Zorro-v1.0.1-beta.3.zip**
 
 不要下载 Source code。Zorro 专用包和通用包二选一，不需要叠加安装。其他遥控器请使用通用包。
 
@@ -22,7 +22,7 @@
 
 第一次安装可跳过本节。已有 DLG 遥测页不用删除或重新绑定。
 
-1. 确认电脑备份完整后，在遥控器内容盘把 `WIDGETS/DLGDash` 改名为 `DLGDash-before-beta2`。如果此名字已存在，换一个没有被使用的备份名字，不要覆盖。
+1. 确认电脑备份完整后，在遥控器内容盘把 `WIDGETS/DLGDash` 改名为 `DLGDash-before-beta3`。如果此名字已存在，换一个没有被使用的备份名字，不要覆盖。
 2. 打开 `SCRIPTS/TOOLS`。如果有 `DLGSetup.luac`，把它改名为 `DLGSetup.luac.bak`。
 3. 打开 `SCRIPTS/TELEMETRY`。如果有 `DLG.luac`，把它改名为 `DLG.luac.bak`。
 4. 已有同名 `.bak` 时换一个备份名字；不要覆盖之前的备份。不需要处理其他插件的文件。
@@ -33,7 +33,7 @@ Windows 先打开“查看 → 显示 → 文件扩展名”，避免把文件�
 
 1. 右键下载的 ZIP，选择“全部解压缩”。
 2. 打开解压后的 **SD**，把 **SD 里面的内容**复制到遥控器内容盘根目录，允许合并文件夹及替换 DLG 的两个 `.lua` 入口。
-3. 更新用户：把刚改名的 `DLGDash-before-beta2/profiles` 文件夹复制进新的 `WIDGETS/DLGDash`，合并以保留各模型的插件设置。只复制 profiles，不把旧 `.lua`、`.luac` 或整个旧目录复制回来。
+3. 更新用户：把刚改名的 `DLGDash-before-beta3/profiles` 文件夹复制进新的 `WIDGETS/DLGDash`，合并以保留各模型的插件设置。只复制 profiles，不把旧 `.lua`、`.luac` 或整个旧目录复制回来。
 4. 确认下面的位置都存在。以 H: 为例，实际盘符可能不同：
 
 ```text
@@ -106,7 +106,7 @@ H:/SCRIPTS/TELEMETRY/DLG.lua
 
 | 现象 | 检查方法 |
 | --- | --- |
-| 仍报 `_G` 为 nil | 先确认下载的是 beta.2，并按第 3、4 节使用新目录及处理两个入口的旧缓存 |
+| 仍报 `_G` 为 nil | 先确认下载的是 beta.3，并按第 3、4 节使用新目录及处理两个入口的旧缓存 |
 | 提示缺文件 | 重新完整解压专用包，核对第 4 节路径；不要只更新单个 Lua |
 | not enough memory | 这是运行内存不足；记录是在打开工具、进设置、翻页还是保存时发生，并提供完整报错 |
 | 无法保存 | 检查 profiles 是否存在、是否写保护、内容盘空间是否充足 |

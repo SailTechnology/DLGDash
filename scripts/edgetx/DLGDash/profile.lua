@@ -37,7 +37,7 @@ end
 
 local function escaped(value)
   -- EdgeTX can omit LUA_ENABLE_STRLIB_MT; call the string library explicitly.
-  return (string.gsub(tostring(value), "[^%w%-]", function(c) return string.format("_%02X", string.byte(c)) end))
+  return (string.gsub(tostring(value), "[^%w%-]", function(c) return (string.format("_%02X", string.byte(c))) end))
 end
 
 function P.identity()
@@ -70,7 +70,7 @@ local function checksum(text)
     i = i + 8
   end
   for j = i, #text do a = (a + string.byte(text, j)) % 65521; b = (b + a) % 65521 end
-  return string.format("%04x%04x", b, a)
+  return (string.format("%04x%04x", b, a))
 end
 
 -- Table replacements avoid a Lua callback per byte during verified two-slot saves.
@@ -170,7 +170,7 @@ function P.stamp(key)
     parts[#parts + 1] = stat and table.concat({ stat.size, t.year or 0, t.mon or 0, t.day or 0,
       t.hour or 0, t.min or 0, t.sec or 0 }, ":") or "-"
   end
-  return table.concat(parts, "|")
+  return (table.concat(parts, "|"))
 end
 
 function P.save(key, config)
@@ -243,7 +243,7 @@ function P.field(name)
     return id and id > 0 and getFieldInfo(id) or nil
   end
   if sources then
-    for id, label in sources() do if label == name then return getFieldInfo(id) end end
+    for id, label in sources() do if label == name then return (getFieldInfo(id)) end end
   end
 end
 

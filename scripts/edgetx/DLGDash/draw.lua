@@ -12,7 +12,8 @@ local c = D.colors
 local fonts = { XXLSIZE, DBLSIZE, MIDSIZE, BOLD, SMLSIZE, TINSIZE }
 local fontStart = {}
 for i, font in ipairs(fonts) do fontStart[font] = i end
-local function round(v) return math.floor(v + 0.5) end
+-- Parentheses avoid a broken C tail call in the EdgeTX 2.10 Lua VM.
+local function round(v) return (math.floor(v + 0.5)) end
 function D.fill(x, y, w, h, color)
   if w > 0 and h > 0 then lcd.drawFilledRectangle(round(x), round(y), round(w), round(h), color) end
 end

@@ -6,7 +6,7 @@ function C.elapsed(now, before)
 end
 
 local function finite(v) return type(v) == "number" and v == v and math.abs(v) < 1000000 end
-local function clamp(v, lo, hi) return math.max(lo, math.min(v, hi)) end
+local function clamp(v, lo, hi) return (math.max(lo, math.min(v, hi))) end
 
 function C.new(config, profile)
   return { config = config, profile = profile, data = { channels = {} }, history = {},

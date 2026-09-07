@@ -14,7 +14,7 @@ local numericChoices = {
 }
 local function numberChoices(first, last, step, scale, unit)
   -- Do not allocate 101 tables/strings just to display a launch delay.
-  return setmetatable({ first = first, last = last, step = step, scale = scale, unit = unit }, numericChoices)
+  return (setmetatable({ first = first, last = last, step = step, scale = scale, unit = unit }, numericChoices))
 end
 local function fromValues(values, scale, unit)
   local choices = {}
@@ -60,7 +60,7 @@ local function choicesFor(s, row)
 end
 local function rowLabel(s, row)
   if row.key == "period" then
-    return string.format("%.1fs / %.2fs", s.config.period / 100, math.max(s.config.period, math.ceil(s.config.window * 100 / 120)) / 100)
+    return (string.format("%.1fs / %.2fs", s.config.period / 100, math.max(s.config.period, math.ceil(s.config.window * 100 / 120)) / 100))
   end
   if type(row.choices) == "string" then
     local value = s.config[row.key]
@@ -83,7 +83,7 @@ local function voltageText(source)
     value = sum
   end
   if type(value) ~= "number" or value ~= value or value <= 0 or value > 100 then return "--.--V" end
-  return string.format("%.2fV", value)
+  return (string.format("%.2fV", value))
 end
 local function open(s, row)
   local choices = choicesFor(s, row)

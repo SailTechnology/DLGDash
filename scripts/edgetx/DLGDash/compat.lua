@@ -19,7 +19,7 @@ end
 if not A.output then
   function A.output(index)
     -- Old getValue(CHn) is BEFORE limits/reverse, not the final servo output.
-    return getValue("ch" .. (index + 1))
+    return (getValue("ch" .. (index + 1)))
   end
 end
 return A

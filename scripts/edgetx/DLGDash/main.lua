@@ -1,4 +1,4 @@
--- DLGDash v1.0.1-beta.2 by Sail. PA01 + experimental V16; read-only model/radio APIs.
+-- DLGDash v1.0.1-beta.3 by Sail. PA01 + experimental V16; read-only model/radio APIs.
 local ROOT = "/WIDGETS/DLGDash/"
 local P, C, D, Settings
 local function modules()
@@ -54,8 +54,8 @@ local function update(w, opts)
 end
 local function sample(w)
   local key = P.identity()
-  if key ~= w.key then w.editor = nil; bind(w) end
-  if not w.editor and C.elapsed(getTime(), w.pollTick) >= 200 then
+  if key ~= w.key then w.editor, w.editorVisible = nil, false; bind(w) end
+  if not w.editorVisible and C.elapsed(getTime(), w.pollTick) >= 200 then
     w.pollTick = getTime()
     local stamp = P.stamp(w.key)
     local resumed = C.elapsed(getTime(), w.state.dataTick) > 100
@@ -67,7 +67,7 @@ local function sample(w)
       return false
     end
   end
-  w.state.muted = w.editor ~= nil
+  w.state.muted = w.editorVisible == true
   C.update(w.state)
   return true
 end
@@ -75,12 +75,14 @@ local function openSettings(w)
   if not Settings then Settings = assert(loadScript(ROOT .. "settings.lua"))(P, D) end
   w.editor = Settings.new(w.key, w.state.config, function(config, revision)
     C.configure(w.state, config); w.revision = revision; w.stamp = P.stamp(w.key)
-  end, function() w.editor = nil end)
+  end, function() w.editor, w.editorVisible = nil, false end)
+  w.editorVisible = true
 end
 local function refresh(w, event, touch)
   if not w then return end
-  local ready = sample(w)
   local fullscreen = event ~= nil
+  w.editorVisible = fullscreen and w.editor ~= nil
+  local ready = sample(w)
   local zone = fullscreen and { x = 0, y = 0, w = LCD_W, h = LCD_H } or w.zone
   if not ready then
     D.fill(zone.x or 0, zone.y or 0, zone.w, zone.h, D.colors.bg)
@@ -88,7 +90,8 @@ local function refresh(w, event, touch)
     return
   end
   if w.editor and fullscreen then Settings.run(w.editor, event, touch, zone.w, zone.h); return end
-  if w.editor then w.editor = nil end
+  -- Firmware can leave full-screen independently of our Exit button. Keep the
+  -- draft for re-entry, but do not mute flight tones while settings are hidden.
   if fullscreen then
     local enter = EVT_VIRTUAL_ENTER ~= nil and event == EVT_VIRTUAL_ENTER
     local tap = touch and touch.tapCount and touch.tapCount > 0 and touch.y < 25 and touch.x > zone.w - 72
@@ -98,6 +101,8 @@ local function refresh(w, event, touch)
   D.dashboard(w.state, C, zone, fullscreen)
   if w.error then D.text(w.error, zone.x or 0, (zone.y or 0) + 20, zone.w, 16, D.colors.red, SMLSIZE, "center") end
 end
-local function background(w) if w then sample(w) end end
+local function background(w)
+  if w then w.editorVisible = false; sample(w) end
+end
 return { name = "DLGDash", options = options, create = create, update = update,
-  refresh = refresh, background = background, version = "1.0.1-beta.2" }
+  refresh = refresh, background = background, version = "1.0.1-beta.3" }

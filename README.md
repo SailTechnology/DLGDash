@@ -2,16 +2,18 @@
 
 DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、四/六路舵量、历史曲线和升降提示音。
 
-[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 专用教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.2) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
+[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 专用教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
 
-**Zorro 用户请下载 `DLGDash-Zorro-v1.0.1-beta.2.zip`，按[专用教程](docs/INSTALL-ZORRO.md)更新。beta.2 修复进入设置时的 `_G` 报错；其他机型选通用包 `DLGDash-v1.0.1-beta.2.zip`，二选一，不需要叠加安装。测试版仍需先在地面验证。**
+**V16、PA01、X9D 系列、GX12 下载 `DLGDash-v1.0.1-beta.3.zip`；Zorro 下载 `DLGDash-Zorro-v1.0.1-beta.3.zip`。二选一，不需要叠加安装。**
+
+beta.3 修复 V16 设置页选源时的绘图报错，界面切换不再直接丢弃未保存的设置，并保留 Zorro 的设置入口修复。V16 约 45 秒返回的实机现象仍需按[发布页步骤](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3)复测，测试版请先在地面验证。
 
 ## 选择你的遥控器
 
 | 遥控器 | 安装到哪里 | 当前状态 |
 | --- | --- | --- |
 | PA01 | 彩屏主屏，添加 DLGDash 控件 | 有前期实机反馈，更新后需复查 |
-| HelloRadio V16 | 彩屏主屏，添加 DLGDash 控件 | 实验适配 |
+| HelloRadio V16 | 彩屏主屏，添加 DLGDash 控件 | 2.10.1 兼容修复，待实机复测 |
 | FrSky X9D / X9D Plus / Plus 2019 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
 | RadioMaster GX12 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
 | RadioMaster Zorro | 模型的 Display 页面，选择 Script → DLG | 新增旧版 EdgeTX 兼容测试 |

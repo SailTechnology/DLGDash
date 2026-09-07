@@ -64,7 +64,7 @@ foreach ($entry in @($flightFiles) + @($profileFiles)) {
     if ((Get-FileHash -LiteralPath (Join-Path $card $entry.Path) -Algorithm SHA256).Hash -ne $entry.SHA256) { throw "Model/radio verification failed: $($entry.Path)" }
 }
 $result = [pscustomobject]@{
-    Version = '1.0.1-beta.2'
+    Version = '1.0.1-beta.3'
     Board = $board
     Card = $card
     Backup = $backup

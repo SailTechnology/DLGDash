@@ -2,7 +2,7 @@
 
 按顺序完成：**备份 → 复制文件 → 添加页面 → 设置本机参数 → 地面检查**。不需要改代码，也不需要先刷固件。
 
-Zorro 请优先按 [Zorro 专用教程](INSTALL-ZORRO.md)安装 **DLGDash-Zorro-v1.0.1-beta.2.zip**，此版修复进入设置时报 `_G` 为 nil 的问题。测试版支持尝试 EdgeTX 2.7.1，仍需真机地面验证。下图使用模拟数据；系统菜单名称可能随固件语言不同而略有变化。
+Zorro 请按 [Zorro 专用教程](INSTALL-ZORRO.md)安装 **DLGDash-Zorro-v1.0.1-beta.3.zip**。V16 等机型用 **DLGDash-v1.0.1-beta.3.zip**，此版修复 V16 设置页绘图报错。所有机型仍需真机地面验证。下图使用模拟数据；系统菜单名称可能随固件语言不同而略有变化。
 
 ## 1. 先确定安装路线
 
@@ -19,7 +19,7 @@ Zorro 请优先按 [Zorro 专用教程](INSTALL-ZORRO.md)安装 **DLGDash-Zorro-
 
 1. 飞机放稳，接收机先断电。不要在电机可能启动或正在飞行时安装。
 2. 遥控器保证电量充足，准备一根能传数据的 USB 线。
-3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.2)，展开 **Assets**。Zorro 下载 **DLGDash-Zorro-v1.0.1-beta.2.zip**；其他机型下载 **DLGDash-v1.0.1-beta.2.zip**。二选一，不要选 Source code，也不要仅下载 SHA256SUMS.txt。
+3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3)，展开 **Assets**。Zorro 下载 **DLGDash-Zorro-v1.0.1-beta.3.zip**；其他机型下载 **DLGDash-v1.0.1-beta.3.zip**。二选一，不要选 Source code，也不要仅下载 SHA256SUMS.txt。
 4. 右键 ZIP，选择“全部解压缩”。打开后应看到 **SD** 文件夹，里面有 WIDGETS 和 SCRIPTS。
 5. 遥控器正常开机，接 USB，选择 **USB Storage / USB 存储**。不要选择 Joystick / 游戏控制器。
 6. 在 Windows“此电脑”里打开新出现的内容盘。正确盘通常包含 **MODELS、RADIO、SCRIPTS、SOUNDS**。
@@ -71,7 +71,13 @@ H:/SCRIPTS/TELEMETRY/DLG.lua.txt
 
 ### 已安装过旧版
 
-确认已备份后，移除 DLGDash 文件夹内与更新 Lua 同名的旧 `.luac` 缓存，以及对应的 DLGSetup.luac、DLG.luac。不要删除其他插件的缓存，也不要删 profiles。
+建议用新目录更新，避免残留旧文件：
+
+1. 完整备份后，把原 `WIDGETS/DLGDash` 改名为未使用的名字，例如 `DLGDash-before-beta3`，不要覆盖已有备份。
+2. 将 `SCRIPTS/TOOLS/DLGSetup.luac`、`SCRIPTS/TELEMETRY/DLG.luac` 改为未使用的 `.bak` 名字；不存在则跳过。不处理其他插件。
+3. 从新 ZIP 复制 SD 里的内容，得到新的 `WIDGETS/DLGDash`。
+4. 只把旧目录里的 `profiles` 复制回新目录，保留每个模型的设置。不要把旧 Lua、缓存或整个旧目录复制回来。
+5. 安全弹出并重启。已添加的 DLGDash 页面无需重新添加。
 
 Windows 可通过“查看 → 显示 → 文件扩展名”显示真实后缀。不确定文件身份时先保留并反馈文件列表。
 
@@ -132,6 +138,10 @@ Windows 可通过“查看 → 显示 → 文件扩展名”显示真实后缀�
 黑白屏：滚轮或加减键逐个选择字段，继续移动会选中底部 `<`、`>`、Save、Exit。底部横线表示当前选中的动作，按确认执行。进入选项列表后，按确认采用、按返回取消。
 
 修改后必须选择 **Save / 保存**。星号表示尚未保存；连续两次退出会放弃修改。
+
+彩屏设置被全屏切换打断时，再进入 DLGDash 全屏可继续当前草稿。草稿不是已保存设置，重启或切换模型前仍需点保存。
+
+V16 更新后请从主屏按滚轮进入设置，打开电压源列表、滚动、确认并保存；再停留至少 2 分钟。若仍自动返回，记录是否退出全屏、是否出现报错，并从 SYS → TOOLS → DLG Setup 再试一次。
 
 切换中文：
 

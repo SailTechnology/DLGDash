@@ -5,10 +5,11 @@ const { lua, lauxlib, lualib, to_luastring, to_jsstring } = require('fengari');
 const { PNG } = require('pngjs');
 const firmwareFont = require('./font.cjs');
 const root = path.resolve(__dirname, '..');
-const v16 = process.argv.includes('--v16');
+const legacyV16 = process.argv.includes('--v16-210');
+const v16 = legacyV16 || process.argv.includes('--v16');
 const radio = v16 ? 'v16' : 'pa01';
 const screenWidth = v16 ? 480 : 320, screenHeight = v16 ? 272 : 240;
-const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio);
+const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio + (legacyV16 ? '-210' : ''));
 fs.mkdirSync(output, { recursive: true });
 
 // Decode the same LVGL bitmap fonts used by EdgeTX v2.11.3 on PA01 (sml).
@@ -19,8 +20,14 @@ let image, commands, textBounds, frameName;
 const L = lauxlib.luaL_newstate();
 lualib.luaL_openlibs(L);
 lua.lua_pushnil(L); lua.lua_setglobal(L, to_luastring('_G'));
+lua.lua_pushinteger(L, legacyV16 ? 10 : 11); lua.lua_setglobal(L, to_luastring('__firmwareMinor'));
 function argString(i) { return to_jsstring(lua.lua_tolstring(L, i)); }
-function argNumber(i) { return lua.lua_tonumber(L, i); }
+function argNumber(i) {
+  assert(lua.lua_type(L, i) === lua.LUA_TNUMBER, `argument ${i}: number expected, got ${to_jsstring(lua.lua_typename(L, lua.lua_type(L, i)))}`);
+  const value = lua.lua_tonumber(L, i);
+  assert(Number.isFinite(value), `argument ${i}: finite number expected`);
+  return value;
+}
 function expose(name, fn) {
   lua.lua_pushjsfunction(L, state => {
     try { return fn(state); }
@@ -62,8 +69,8 @@ expose('__bitmapSize', () => {
   lua.lua_pushinteger(L, bitmap.width); lua.lua_pushinteger(L, bitmap.height); return 2;
 });
 expose('__mask', () => {
-  if (!image) return 0;
   const name = argString(1), x = argNumber(2), y = argNumber(3), rgb = color(argNumber(4));
+  if (!image) return 0;
   const png = bitmaps.get(name);
   const index = Number(name.match(/l(\d+)_/)[1]) - 1;
   checkBounds({ kind: 'text', text: phrases[index], x, y, w: png.width, h: png.height, font: 'Noto Sans SC bitmap' });
@@ -96,23 +103,23 @@ expose('__begin', () => {
   return 0;
 });
 expose('__rect', () => {
-  if (!image) return 0;
   const [x, y, w, h, flags] = [1, 2, 3, 4, 5].map(argNumber);
+  if (!image) return 0;
   commands.push({ kind: 'rect', x, y, w, h });
   for (let yy = y; yy < y + h; yy++) for (let xx = x; xx < x + w; xx++) pixel(xx, yy, color(flags));
   return 0;
 });
 expose('__line', () => {
-  if (!image) return 0;
   const [x1, y1, x2, y2, , flags] = [1, 2, 3, 4, 5, 6].map(argNumber);
+  if (!image) return 0;
   const n = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1), 1);
   commands.push({ kind: 'line', x1, y1, x2, y2 });
   for (let i = 0; i <= n; i++) pixel(x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n, color(flags));
   return 0;
 });
 expose('__text', () => {
-  if (!image) return 0;
   const x = argNumber(1), y = argNumber(2), text = argString(3), flags = argNumber(4);
+  if (!image) return 0;
   const font = fonts[flags % 65536];
   const bounds = { kind: 'text', text, x, y, w: font.measure(text), h: font.height, font: font.name };
   checkBounds(bounds);
