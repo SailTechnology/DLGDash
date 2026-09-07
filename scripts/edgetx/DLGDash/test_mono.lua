@@ -8,6 +8,8 @@ EVT_VIRTUAL_NEXT, EVT_VIRTUAL_PREV, EVT_VIRTUAL_ENTER, EVT_VIRTUAL_EXIT = 10, 11
 EVT_VIRTUAL_INC, EVT_VIRTUAL_DEC = 10, 11
 EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE = 14, 15
 debug.setmetatable("", nil)
+-- EdgeTX's reduced Lua environment need not expose the desktop _G table.
+_G = nil
 local sim = { clock = 0, filename = "demo.yml", current = true, fresh = true, altitude = 12.3,
   voltage = 8.1, speed = 1.2, mode = 0, timer = 128, switch = -1024, output = 0, tones = 0 }
 lcd = { clear = __clear, drawText = __text, drawLine = __line, drawRectangle = __rect, drawPixmap = __pixmap }
@@ -57,6 +59,7 @@ function mkdir() end
 function fstat(path) if storage[path] then return { size = #storage[path], time = { sec = stamp } } end end
 local count = 0
 local function eq(a, b, message) count = count + 1; assert(a == b, message or (tostring(a) .. " != " .. tostring(b))) end
+eq(_G, nil, "Radio tests must not rely on desktop globals")
 local function budget(label, fn)
   local n = 0
   debug.sethook(function() n = n + 100 end, "", 100); fn(); debug.sethook()
@@ -103,6 +106,13 @@ sim.mode = 2; tick(); sim.mode = 0; sim.altitude = 45.6; tick(); eq(s.launchHeig
 cfg.toneVolume = 5; sim.switch = 1024; cfg.resetSource = ""; tick(200); tick(50); assert(sim.tones > 0)
 local saved, closed = false, false
 local e = Settings.new(key, cfg, function() saved = true end, function() closed = true end)
+local inc, dec, nextPage, prevPage = EVT_VIRTUAL_INC, EVT_VIRTUAL_DEC, EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE
+EVT_VIRTUAL_INC, EVT_VIRTUAL_DEC, EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE = nil, nil, nil, nil
+Settings.run(e, nil); eq(e.focus, 1); eq(e.page, 1); eq(e.picker, nil)
+Settings.run(e, 0); eq(e.focus, 1)
+Settings.run(e, EVT_VIRTUAL_NEXT); eq(e.focus, 2)
+Settings.run(e, EVT_VIRTUAL_PREV); eq(e.focus, 1)
+EVT_VIRTUAL_INC, EVT_VIRTUAL_DEC, EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE = inc, dec, nextPage, prevPage
 for _, lang in ipairs({ 0, 1 }) do
   e.config.language = lang
   for page, info in ipairs(e.pages) do
@@ -120,12 +130,16 @@ for _, lang in ipairs({ 0, 1 }) do
     end
   end
 end
-e.page, e.focus, e.message = 8, 1, nil
+e.page, e.focus, e.message = 9, 1, nil
+e.config.language = 0
+Settings.run(e, EVT_VIRTUAL_ENTER); e.picker.index = 2; Settings.run(e, EVT_VIRTUAL_ENTER)
+eq(e.config.language, 1)
+e.page, e.focus = 8, 1
 Settings.run(e, EVT_VIRTUAL_ENTER); e.picker.index = legacy and 2 or 3; Settings.run(e, EVT_VIRTUAL_ENTER)
 eq(e.config.toneVolume, legacy and -1 or 1)
 e.focus = #e.pages[8].fields + 3
 budget("save settings", function() Settings.run(e, EVT_VIRTUAL_ENTER) end)
-eq(saved, true); eq(P.load(key).toneVolume, legacy and -1 or 1)
+eq(saved, true); eq(P.load(key).toneVolume, legacy and -1 or 1); eq(P.load(key).language, 1)
 Settings.run(e, EVT_VIRTUAL_EXIT); eq(closed, true)
 local api = loadScript("/WIDGETS/DLGDash/DLG.lua")()
 budget("cold init", api.init)

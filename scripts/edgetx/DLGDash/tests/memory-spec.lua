@@ -49,6 +49,7 @@ function loadScript(path)
   return readFile(__root .. "/" .. name)
 end
 debug.setmetatable("", nil)
+_G = nil
 __stage("entry")
 tool = assert(loadScript("/WIDGETS/DLGDash/" .. (telemetry and "DLG.lua" or "DLGSetup.lua")))()
 tool.init()
@@ -79,4 +80,4 @@ collectgarbage("collect")
 tool = assert(loadScript("/WIDGETS/DLGDash/DLGSetup.lua"))()
 tool.init()
 tool.run(0)
-_G.__keepTool = tool
+__keepTool = tool

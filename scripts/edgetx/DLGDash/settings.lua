@@ -42,7 +42,8 @@ function S.new(key, config, onSave, onClose)
   return { key = key, modelName = name, config = P.copy(config), onSave = onSave, onClose = onClose,
     page = 1, focus = 1, pages = pages, dirty = false }
 end
-local function eventIs(event, name) return event ~= nil and _G[name] ~= nil and event == _G[name] end
+-- Read event constants directly; reduced firmware Lua may not expose _G.
+local function eventIs(event, code) return code ~= nil and event ~= nil and event == code end
 local function indexOf(choices, value)
   if choices.selectedIndex then return choices.selectedIndex end
   if getmetatable(choices) == numericChoices then

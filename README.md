@@ -2,9 +2,9 @@
 
 DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、四/六路舵量、历史曲线和升降提示音。
 
-[从零安装](docs/INSTALL-BEGINNER.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.1) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
+[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 专用教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.2) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
 
-**Zorro 用户请下载 v1.0.1-beta.1 的 `DLGDash-v1.0.1-beta.1.zip`。此版包含旧固件兼容修复，仍需先在地面验证；原 v1.0 不包含这些修复。**
+**Zorro 用户请下载 `DLGDash-Zorro-v1.0.1-beta.2.zip`，按[专用教程](docs/INSTALL-ZORRO.md)更新。beta.2 修复进入设置时的 `_G` 报错；其他机型选通用包 `DLGDash-v1.0.1-beta.2.zip`，二选一，不需要叠加安装。测试版仍需先在地面验证。**
 
 ## 选择你的遥控器
 
@@ -43,6 +43,8 @@ DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、�
 ![黑白屏六舵机页面](docs/images/gx12-servos-large.png)
 
 ![黑白屏中文设置](docs/images/gx12-settings-large.png)
+
+![Zorro 飞行总览](docs/images/zorro-large.png)
 
 ## 使用前注意
 

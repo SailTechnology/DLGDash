@@ -7,7 +7,16 @@ const radio = process.argv.includes('--x9d') ? 'x9d' : process.argv.includes('--
 const legacy = process.argv.includes('--legacy');
 const width = radio === 'x9d' ? 212 : 128, height = 64;
 const root = path.resolve(__dirname, '..');
-const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio + (legacy ? '-legacy' : ''));
+const sdIndex = process.argv.indexOf('--sd-root');
+assert(sdIndex < 0 || process.argv[sdIndex + 1], '--sd-root needs an extracted SD directory');
+const sdRoot = sdIndex < 0 ? null : path.resolve(process.argv[sdIndex + 1]);
+function runtimeFile(file) {
+  if (!sdRoot) return path.join(root, file);
+  if (file === 'DLG.lua') return path.join(sdRoot, 'SCRIPTS/TELEMETRY', file);
+  if (file === 'DLGSetup.lua') return path.join(sdRoot, 'SCRIPTS/TOOLS', file);
+  return path.join(sdRoot, 'WIDGETS/DLGDash', file);
+}
+const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio + (legacy ? '-legacy' : '') + (sdRoot ? '-package' : ''));
 fs.mkdirSync(output, { recursive: true });
 const font = [PNG.sync.read(fs.readFileSync(path.join(__dirname, 'reference/mono-05x07.png'))), PNG.sync.read(fs.readFileSync(path.join(__dirname, 'reference/mono-10x14.png')))];
 const L = lauxlib.luaL_newstate(); lualib.luaL_openlibs(L);
@@ -73,7 +82,7 @@ expose('__rect', () => {
 });
 expose('__pixmap', () => {
   if (!image) return 0;
-  const file = str(3).replace('/WIDGETS/DLGDash/', ''), bmp = fs.readFileSync(path.join(root, file));
+  const file = str(3).replace('/WIDGETS/DLGDash/', ''), bmp = fs.readFileSync(runtimeFile(file));
   const w = bmp.readInt32LE(18), h = bmp.readInt32LE(22), offset = bmp.readUInt32LE(10), stride = Math.ceil(w / 8) * 4;
   assert(w <= width / 2); assert.equal(bmp.readUInt16LE(28), 4);
   const x = num(1), y = num(2); textBounds({ text: file, x, y, w, h });
@@ -103,7 +112,7 @@ expose('__fontRegression', () => {
 expose('loadScript', () => {
   const file = str(1).replace('/WIDGETS/DLGDash/', ''); assert(!file.includes('..'));
   assert(!['draw.lua', 'locale.lua', 'main.lua', 'color-settings.lua'].includes(file), 'Monochrome must not compile color renderers');
-  const script = fs.readFileSync(path.join(root, file));
+  const script = fs.readFileSync(runtimeFile(file));
   if (lauxlib.luaL_loadbuffer(L, script, script.length, to_luastring('@' + file)) !== lua.LUA_OK) throw Error(str(-1));
   return 1;
 });

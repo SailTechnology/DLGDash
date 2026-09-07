@@ -24,9 +24,9 @@ local function drawDiagnostics(s, w, top, rowH, labelH)
 end
 function S.run(s, event, touch, w, h)
   local fields = s.pages[s.page].fields
-  local nextEvent = eventIs(event, "EVT_VIRTUAL_NEXT") or eventIs(event, "EVT_VIRTUAL_INC")
-  local prevEvent = eventIs(event, "EVT_VIRTUAL_PREV") or eventIs(event, "EVT_VIRTUAL_DEC")
-  local enter, exit = eventIs(event, "EVT_VIRTUAL_ENTER"), eventIs(event, "EVT_VIRTUAL_EXIT")
+  local nextEvent = eventIs(event, EVT_VIRTUAL_NEXT) or eventIs(event, EVT_VIRTUAL_INC)
+  local prevEvent = eventIs(event, EVT_VIRTUAL_PREV) or eventIs(event, EVT_VIRTUAL_DEC)
+  local enter, exit = eventIs(event, EVT_VIRTUAL_ENTER), eventIs(event, EVT_VIRTUAL_EXIT)
   local wide = w == 480 and h == 272
   local top, labelH, footerH = wide and 46 or 38, wide and 19 or 16, wide and 40 or 36
   local footer = h - footerH
@@ -52,8 +52,8 @@ function S.run(s, event, touch, w, h)
   else
     if nextEvent then s.focus = s.focus % (#fields + 4) + 1; s.confirmDiscard = false end
     if prevEvent then s.focus = (s.focus - 2) % (#fields + 4) + 1; s.confirmDiscard = false end
-    if eventIs(event, "EVT_VIRTUAL_NEXT_PAGE") then changePage(s, 1) end
-    if eventIs(event, "EVT_VIRTUAL_PREV_PAGE") then changePage(s, -1) end
+    if eventIs(event, EVT_VIRTUAL_NEXT_PAGE) then changePage(s, 1) end
+    if eventIs(event, EVT_VIRTUAL_PREV_PAGE) then changePage(s, -1) end
     if enter then activate(s) end
     if exit then leave(s) end
     if tapped(touch) then

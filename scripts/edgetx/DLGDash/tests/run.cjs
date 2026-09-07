@@ -18,6 +18,7 @@ const frames = [];
 let image, commands, textBounds, frameName;
 const L = lauxlib.luaL_newstate();
 lualib.luaL_openlibs(L);
+lua.lua_pushnil(L); lua.lua_setglobal(L, to_luastring('_G'));
 function argString(i) { return to_jsstring(lua.lua_tolstring(L, i)); }
 function argNumber(i) { return lua.lua_tonumber(L, i); }
 function expose(name, fn) {

@@ -2,7 +2,7 @@
 
 按顺序完成：**备份 → 复制文件 → 添加页面 → 设置本机参数 → 地面检查**。不需要改代码，也不需要先刷固件。
 
-Zorro 请下载 [v1.0.1-beta.1 兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.1)，原 v1.0 不包含这次修复。测试版支持尝试 EdgeTX 2.7.1，仍需真机地面验证。下图使用模拟数据；系统菜单名称可能随固件语言不同而略有变化。
+Zorro 请优先按 [Zorro 专用教程](INSTALL-ZORRO.md)安装 **DLGDash-Zorro-v1.0.1-beta.2.zip**，此版修复进入设置时报 `_G` 为 nil 的问题。测试版支持尝试 EdgeTX 2.7.1，仍需真机地面验证。下图使用模拟数据；系统菜单名称可能随固件语言不同而略有变化。
 
 ## 1. 先确定安装路线
 
@@ -19,7 +19,7 @@ Zorro 请下载 [v1.0.1-beta.1 兼容测试版](https://github.com/SailTechnolog
 
 1. 飞机放稳，接收机先断电。不要在电机可能启动或正在飞行时安装。
 2. 遥控器保证电量充足，准备一根能传数据的 USB 线。
-3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.1)，展开 **Assets**，下载 **DLGDash-v1.0.1-beta.1.zip** 到电脑；不要选 Source code，也不要仅下载 SHA256SUMS.txt。
+3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.2)，展开 **Assets**。Zorro 下载 **DLGDash-Zorro-v1.0.1-beta.2.zip**；其他机型下载 **DLGDash-v1.0.1-beta.2.zip**。二选一，不要选 Source code，也不要仅下载 SHA256SUMS.txt。
 4. 右键 ZIP，选择“全部解压缩”。打开后应看到 **SD** 文件夹，里面有 WIDGETS 和 SCRIPTS。
 5. 遥控器正常开机，接 USB，选择 **USB Storage / USB 存储**。不要选择 Joystick / 游戏控制器。
 6. 在 Windows“此电脑”里打开新出现的内容盘。正确盘通常包含 **MODELS、RADIO、SCRIPTS、SOUNDS**。

@@ -1,8 +1,12 @@
 param(
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.1'),
-    [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName = 'DLGDash-v1.0.1-beta.1.zip'
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.2'),
+    [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName,
+    [ValidateSet('Universal', 'Zorro')][string]$Target = 'Universal'
 )
 $ErrorActionPreference = 'Stop'
+if (-not $PackageName) {
+    $PackageName = if ($Target -eq 'Zorro') { 'DLGDash-Zorro-v1.0.1-beta.2.zip' } else { 'DLGDash-v1.0.1-beta.2.zip' }
+}
 $output = [IO.Path]::GetFullPath($OutputDirectory)
 $stage = Join-Path $output ('package-' + [IO.Path]::GetRandomFileName())
 $sd = Join-Path $stage 'SD'
@@ -10,17 +14,38 @@ $widget = Join-Path $sd 'WIDGETS\DLGDash'
 $tool = Join-Path $sd 'SCRIPTS\TOOLS'
 $telemetry = Join-Path $sd 'SCRIPTS\TELEMETRY'
 New-Item -ItemType Directory -Path $widget, $tool, $telemetry -Force | Out-Null
-foreach ($name in @('compat.lua', 'profile.lua', 'core.lua', 'draw.lua', 'settings.lua', 'settings-pages.lua', 'color-settings.lua', 'main.lua', 'locale.lua', 'diagnostics.lua', 'mono-ui.lua', 'mono-settings.lua')) {
+$runtime = @('compat.lua', 'profile.lua', 'core.lua', 'settings.lua', 'settings-pages.lua', 'diagnostics.lua', 'mono-ui.lua', 'mono-settings.lua')
+if ($Target -eq 'Universal') { $runtime += @('draw.lua', 'color-settings.lua', 'main.lua', 'locale.lua') }
+foreach ($name in $runtime) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $widget $name) -Force
 }
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'lang') -Destination $widget -Recurse -Force
+if ($Target -eq 'Zorro') {
+    $lang = Join-Path $widget 'lang'
+    New-Item -ItemType Directory -Path $lang | Out-Null
+    foreach ($name in @('mono.lua', 'mono', 'OFL.txt')) {
+        Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('lang/' + $name)) -Destination $lang -Recurse
+    }
+} else {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'lang') -Destination $widget -Recurse -Force
+}
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLGSetup.lua') -Destination $tool -Force
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLG.lua') -Destination $telemetry -Force
 New-Item -ItemType Directory -Path (Join-Path $widget 'profiles'), (Join-Path $widget 'diagnostics') -Force | Out-Null
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'README.md') -Destination $sd -Force
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\THIRD_PARTY_NOTICES.md') -Destination $sd
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\docs\INSTALL-BEGINNER.md') -Destination $sd
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\docs\images') -Destination $sd -Recurse
+$docs = Join-Path $PSScriptRoot '..\..\..\docs'
+if ($Target -eq 'Zorro') {
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination (Join-Path $sd 'README.md')
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination $sd
+    New-Item -ItemType Directory -Path (Join-Path $sd 'images') | Out-Null
+    foreach ($name in @('zorro-large.png', 'zorro-servos-large.png', 'zorro-settings-large.png')) {
+        Copy-Item -LiteralPath (Join-Path $docs ('images/' + $name)) -Destination (Join-Path $sd 'images')
+    }
+} else {
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'README.md') -Destination $sd -Force
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-BEGINNER.md') -Destination $sd
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination $sd
+    Copy-Item -LiteralPath (Join-Path $docs 'images') -Destination $sd -Recurse
+}
 $files = @(Get-ChildItem -LiteralPath $sd -Recurse -File)
 foreach ($file in $files) {
     $relative = [IO.Path]::GetRelativePath($sd, $file.FullName)
@@ -46,4 +71,4 @@ try {
         if ((Get-FileHash -LiteralPath $local -Algorithm SHA256).Hash -ne $hash) { throw "Package hash mismatch: $local" }
     }
 } finally { $zip.Dispose() }
-[pscustomobject]@{ Archive = $archive; Files = $files.Count; SHA256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash } | ConvertTo-Json
+[pscustomobject]@{ Archive = $archive; Target = $Target; Files = $files.Count; SHA256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash } | ConvertTo-Json

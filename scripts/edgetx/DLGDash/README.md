@@ -2,7 +2,7 @@
 
 第一次安装请先按安装包内的 **INSTALL-BEGINNER.md** 操作。本页用于安装后查找参数。
 
-当前兼容测试版为 [v1.0.1-beta.1](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.1)。Zorro 用户请下载其中的 DLGDash-v1.0.1-beta.1.zip；原 v1.0 不包含旧固件适配。本次适配仍需地面验证，不需要为安装插件自动升级固件。
+当前兼容测试版为 [v1.0.1-beta.2](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.2)。Zorro 用户请下载 DLGDash-Zorro-v1.0.1-beta.2.zip，其他机型选 DLGDash-v1.0.1-beta.2.zip。beta.2 修复设置页 `_G` 报错。本次适配仍需地面验证，不需要为安装插件自动升级固件。
 
 ## 打开设置
 

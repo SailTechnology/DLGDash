@@ -22,7 +22,7 @@ foreach ($board in @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'zorro'))
         $args.AllowExperimental = $true
     }
     $installed = (& (Join-Path $source 'Install-DLGDash.ps1') @args) | ConvertFrom-Json
-    if ($installed.Version -ne '1.0.1-beta.1' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
+    if ($installed.Version -ne '1.0.1-beta.2' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
     if (Test-Path -LiteralPath (Join-Path $card 'SCRIPTS/TELEMETRY/DLG.luac')) { throw 'Old cache survived' }
     if (-not (Test-Path -LiteralPath (Join-Path $backup.Backup 'SCRIPTS/TELEMETRY/DLG.luac'))) { throw 'Old cache is not recoverable' }
     foreach ($folder in @('profiles', 'diagnostics')) {

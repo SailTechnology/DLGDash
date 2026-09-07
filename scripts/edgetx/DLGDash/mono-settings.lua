@@ -1,10 +1,10 @@
 -- Reuse the color settings controller and choices; only navigation/layout differ.
 local S, D, H = ...
 function S.run(s, event)
-  local function is(name) return H.eventIs(event, name) end
-  local next = is("EVT_VIRTUAL_NEXT") or is("EVT_VIRTUAL_INC")
-  local prev = is("EVT_VIRTUAL_PREV") or is("EVT_VIRTUAL_DEC")
-  local enter, exit = is("EVT_VIRTUAL_ENTER"), is("EVT_VIRTUAL_EXIT")
+  local function is(code) return H.eventIs(event, code) end
+  local next = is(EVT_VIRTUAL_NEXT) or is(EVT_VIRTUAL_INC)
+  local prev = is(EVT_VIRTUAL_PREV) or is(EVT_VIRTUAL_DEC)
+  local enter, exit = is(EVT_VIRTUAL_ENTER), is(EVT_VIRTUAL_EXIT)
   local fields = s.pages[s.page].fields
   if s.picker then
     local p = s.picker
@@ -14,8 +14,8 @@ function S.run(s, event)
   else
     if next then s.focus = s.focus % (#fields + 4) + 1; s.confirmDiscard = false end
     if prev then s.focus = (s.focus - 2) % (#fields + 4) + 1; s.confirmDiscard = false end
-    if is("EVT_VIRTUAL_NEXT_PAGE") then H.changePage(s, 1) end
-    if is("EVT_VIRTUAL_PREV_PAGE") then H.changePage(s, -1) end
+    if is(EVT_VIRTUAL_NEXT_PAGE) then H.changePage(s, 1) end
+    if is(EVT_VIRTUAL_PREV_PAGE) then H.changePage(s, -1) end
     if enter then H.activate(s) elseif exit then H.leave(s) end
   end
   fields = s.pages[s.page].fields

@@ -44,3 +44,9 @@ path, while the settings loader constructs only the active page and never
 compiles the color renderer on monochrome. The standalone entry rejects missing
 essential APIs before loading modules. test_mono.lua exercises both old/new
 paths independently of these native tests. Actual radio acceptance is pending.
+
+The beta.1 retest showed a different failure: `_G` was nil when entering settings.
+Both native scenarios now remove `_G`, while retaining the loader privately for
+the host harness. The monochrome suite reproduces the old failure before the
+event-constant fix and tests absent optional events. A passing desktop Lua heap
+test alone cannot establish firmware global-table availability.
