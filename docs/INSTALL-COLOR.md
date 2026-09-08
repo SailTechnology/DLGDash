@@ -1,10 +1,10 @@
 # 彩屏安装与更新
 
-适用 PA01、HelloRadio V16、HelloRadio V12，使用 EdgeTX。V12 的滚轮操作另见包内 [V12 教程](INSTALL-V12.md)。本版仍需实机地面验收，不要求先刷 EdgeTX 或 ELRS。
+适用 PA01、HelloRadio V16 / V12、TX16S（不含 MK3）/ TX15、PL18U、Jumper T15 / T16 / T18、FrSky X10 / X12S 等表内 EdgeTX 机型，完整型号和验证状态见 [机型表](RADIOS.md)。V12 的滚轮操作另见包内 [V12 教程](INSTALL-V12.md)。新增机型仍需实机地面验收，不要求先刷 EdgeTX 或 ELRS。
 
 ## 1. 下载并备份
 
-1. 在 [beta.4 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4)的 Assets 下载 **DLGDash-Color-v1.0.1-beta.4.zip**，不要选 Monochrome 或 Source code。
+1. 在 [beta.5 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)的 Assets 下载 **DLGDash-Color-v1.0.1-beta.5.zip**，不要选 Monochrome 或 Source code。
 2. 飞机断电，遥控器开机，拍下 SYS → VERSION 页。确认是 EdgeTX，不把 ELRS 版本当成系统版本。
 3. 用数据线接电脑，选 USB Storage / USB 存储。在电脑找到含 MODELS、RADIO、SCRIPTS 的内容盘，不向固件升级盘写入。
 4. 将内容盘完整复制到电脑一个带日期的新目录，检查模型及 WIDGETS/DLGDash/profiles 已备份。
@@ -13,7 +13,7 @@
 
 第一次安装直接到第 3 节。
 
-1. 完整备份后，将内容盘 `WIDGETS/DLGDash` 改名为未使用的名字，如 `DLGDash-before-beta4`。
+1. 完整备份后，将内容盘 `WIDGETS/DLGDash` 改名为未使用的名字，如 `DLGDash-before-beta5`。
 2. 将 `SCRIPTS/TOOLS/DLGSetup.luac` 改为未使用的备份名字；没有则跳过。不要改其他插件，不删除 MODELS 或 RADIO。
 3. `.luac` 是旧编译缓存，复制新 `.lua` 后若保留旧缓存，可能仍运行旧版。不要把整个旧插件目录复制回来。
 

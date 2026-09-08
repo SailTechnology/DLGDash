@@ -2,7 +2,8 @@
 param(
     [Parameter(Mandatory = $true)][string]$Archive,
     [string]$NodeExecutable = 'node',
-    [Parameter(Mandatory = $true)][ValidateSet('Color', 'Monochrome')][string]$Target
+    [Parameter(Mandatory = $true)][ValidateSet('Color', 'Monochrome')][string]$Target,
+    [switch]$AllRadios
 )
 $ErrorActionPreference = 'Stop'
 $zip = (Resolve-Path -LiteralPath $Archive).Path
@@ -10,6 +11,8 @@ $testRoot = Join-Path ([IO.Path]::GetTempPath()) ('DLGDash-package-' + [guid]::N
 Expand-Archive -LiteralPath $zip -DestinationPath $testRoot
 $sd = Join-Path $testRoot 'SD'
 $widget = Join-Path $sd 'WIDGETS/DLGDash'
+if (-not (Test-Path -LiteralPath (Join-Path $sd 'RADIOS.md'))) { throw 'Missing radio guide' }
+if (Test-Path -LiteralPath (Join-Path $widget 'radios.json')) { throw 'Host radio catalog must not consume radio runtime memory' }
 for ($page = 1; $page -le 10; $page++) {
     $pageFile = Join-Path $widget "pages/$page.lua"
     if (-not (Test-Path -LiteralPath $pageFile -PathType Leaf)) { throw "Missing page: $page" }
@@ -50,5 +53,9 @@ if ($Target -eq 'Monochrome') {
         & $NodeExecutable (Join-Path $PSScriptRoot 'run.cjs') $mode --sd-root $sd
         if ($LASTEXITCODE -ne 0) { throw "Packaged $mode test failed" }
     }
+}
+if ($AllRadios) {
+    & $NodeExecutable (Join-Path $PSScriptRoot 'run-radios.cjs') --target $Target --sd-root $sd
+    if ($LASTEXITCODE -ne 0) { throw 'Packaged radio matrix failed' }
 }
 [pscustomobject]@{Archive=$zip;Target=$Target;ExtractedSD=$sd;Status='PASS';HardwareUsed=$false} | ConvertTo-Json

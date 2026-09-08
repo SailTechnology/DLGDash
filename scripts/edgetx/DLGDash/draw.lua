@@ -1,5 +1,5 @@
 local D = {}
-local wide = LCD_W == 480 and LCD_H == 272
+local wide = LCD_W == 480 and LCD_H >= 272
 local L = assert(loadScript("/WIDGETS/DLGDash/locale.lua"))()
 function D.language(value) D.lang = value end
 D.colors = {

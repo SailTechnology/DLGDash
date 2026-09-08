@@ -27,7 +27,7 @@ function S.run(s, event, touch, w, h)
   local nextEvent = eventIs(event, EVT_VIRTUAL_NEXT) or eventIs(event, EVT_VIRTUAL_INC)
   local prevEvent = eventIs(event, EVT_VIRTUAL_PREV) or eventIs(event, EVT_VIRTUAL_DEC)
   local enter, exit = eventIs(event, EVT_VIRTUAL_ENTER), eventIs(event, EVT_VIRTUAL_EXIT)
-  local wide = w == 480 and h == 272
+  local wide = w == 480 and h >= 272
   local top, labelH, footerH = wide and 46 or 38, wide and 19 or 16, wide and 40 or 36
   local footer = h - footerH
   local rowH = math.floor((footer - top - 4) / 4)

@@ -1,4 +1,4 @@
--- DLGDash v1.0.1-beta.4 by Sail. PA01 + experimental V16/V12; read-only model/radio APIs.
+-- DLGDash v1.0.1-beta.5 by Sail. Color-screen widget; read-only model/radio APIs.
 local ROOT = "/WIDGETS/DLGDash/"
 local P, C, D, Settings
 local function modules()
@@ -105,4 +105,4 @@ local function background(w)
   if w then w.editorVisible = false; sample(w) end
 end
 return { name = "DLGDash", options = options, create = create, update = update,
-  refresh = refresh, background = background, version = "1.0.1-beta.4" }
+  refresh = refresh, background = background, version = "1.0.1-beta.5" }

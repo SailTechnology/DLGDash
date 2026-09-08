@@ -1,8 +1,8 @@
 # DLGDash 设置与使用
 
-第一次安装请先按安装包内的 **INSTALL-BEGINNER.md** 操作。本页用于安装后查找参数。
+第一次安装请先按安装包内的 **README.md** 操作。本页用于安装后查找参数。
 
-当前兼容测试版为 [v1.0.1-beta.4](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4)。PA01、V16、V12 下载 DLGDash-Color-v1.0.1-beta.4.zip；X9D、GX12、Zorro、T14 下载 DLGDash-Monochrome-v1.0.1-beta.4.zip。本版包含 V16 绘图、黑白屏内存和保存兼容修复，仍需地面验证，不需要先升级固件。
+当前兼容测试版为 [v1.0.1-beta.5](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)。彩屏下载 Color 包，黑白屏下载 Monochrome 包；[完整机型与验证状态](../../../docs/RADIOS.md)。本版扩展常见机型和 480×320 横屏，保留 V16 绘图、黑白屏内存和保存兼容修复，仍需地面验证，不需要先升级固件。
 
 T14 使用黑白屏包，包含设置内存与保存修复、EdgeTX 2.10 独立音量选项；按 INSTALL-MONO.md 完成地面检查。
 

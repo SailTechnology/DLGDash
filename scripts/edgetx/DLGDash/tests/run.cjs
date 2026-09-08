@@ -5,10 +5,13 @@ const { lua, lauxlib, lualib, to_luastring, to_jsstring } = require('fengari');
 const { PNG } = require('pngjs');
 const firmwareFont = require('./font.cjs');
 const root = path.resolve(__dirname, '..');
+const radioIndex = process.argv.indexOf('--radio');
+const target = radioIndex >= 0 ? require('../radios.json').find(r => r.board === process.argv[radioIndex + 1] && r.screen === 'Color') : null;
+assert(radioIndex < 0 || target, 'Unknown color radio');
 const legacyV16 = process.argv.includes('--v16-210');
-const v16 = legacyV16 || process.argv.includes('--v16');
-const v12 = process.argv.includes('--v12');
-const radio = v12 ? 'v12' : v16 ? 'v16' : 'pa01';
+const v16 = target ? target.fixture === 'v16' : legacyV16 || process.argv.includes('--v16');
+const v12 = target ? target.fixture === 'v12' : process.argv.includes('--v12');
+const radio = target ? target.board : v12 ? 'v12' : v16 ? 'v16' : 'pa01';
 const sdIndex = process.argv.indexOf('--sd-root');
 assert(sdIndex < 0 || process.argv[sdIndex + 1], '--sd-root needs an extracted SD directory');
 const sdRoot = sdIndex < 0 ? null : path.resolve(process.argv[sdIndex + 1]);
@@ -17,19 +20,22 @@ function runtimeFile(name) {
   if (name === 'DLGSetup.lua') return path.join(sdRoot, 'SCRIPTS/TOOLS', name);
   return path.join(sdRoot, 'WIDGETS/DLGDash', name);
 }
-const screenWidth = v16 ? 480 : 320, screenHeight = v16 ? 272 : 240;
+const screenWidth = target ? target.width : v16 ? 480 : 320, screenHeight = target ? target.height : v16 ? 272 : 240;
 const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' + radio + (legacyV16 ? '-210' : ''));
 fs.mkdirSync(output, { recursive: true });
 
 // Decode the same LVGL bitmap fonts used by EdgeTX v2.11.3 on PA01 (sml).
-const fonts = [null, ...['bold_STD', 'XXS', 'XS', 'L', 'bold_XL', 'bold_XXL'].map(name => firmwareFont('en_' + name, v12 ? 'v12' : v16 ? 'std' : ''))];
+const fontFamily = target?.firmwareMinor === 12 ? 'std212' : v12 ? 'v12' : v16 ? 'std' : '';
+const fonts = [null, ...['bold_STD', 'XXS', 'XS', 'L', 'bold_XL', 'bold_XXL'].map(name => firmwareFont('en_' + name, fontFamily))];
 const colors = [];
 const frames = [];
 let image, commands, textBounds, frameName;
 const L = lauxlib.luaL_newstate();
 lualib.luaL_openlibs(L);
 lua.lua_pushnil(L); lua.lua_setglobal(L, to_luastring('_G'));
-lua.lua_pushinteger(L, legacyV16 ? 10 : 11); lua.lua_setglobal(L, to_luastring('__firmwareMinor'));
+lua.lua_pushstring(L, to_luastring(radio)); lua.lua_setglobal(L, to_luastring('__testRadio'));
+lua.lua_pushinteger(L, screenHeight); lua.lua_setglobal(L, to_luastring('__testHeight'));
+lua.lua_pushinteger(L, legacyV16 ? 10 : target?.firmwareMinor || 11); lua.lua_setglobal(L, to_luastring('__firmwareMinor'));
 function argString(i) { return to_jsstring(lua.lua_tolstring(L, i)); }
 function argNumber(i) {
   assert(lua.lua_type(L, i) === lua.LUA_TNUMBER, `argument ${i}: number expected, got ${to_jsstring(lua.lua_typename(L, lua.lua_type(L, i)))}`);
@@ -202,4 +208,4 @@ if (lauxlib.luaL_loadbuffer(L, spec, spec.length, to_luastring('@' + specName)) 
 const files = [...new Set(frames)];
 console.log(`${radio.toUpperCase()}: ${files.length} real-font screenshots, zero text overlaps / out-of-screen draws.`);
 console.log(`Font heights: ${fonts.filter(Boolean).map(f => `${f.name}=${f.height}`).join(', ')}`);
-fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ screen: `${radio.toUpperCase()} ${screenWidth}x${screenHeight}`, fonts: v12 ? 'EdgeTX 92c3224 sml' : 'EdgeTX v2.11.3 ' + (v16 ? 'std' : 'sml'), stringMetatable: false, screenshots: files, status: 'PASS' }, null, 2));
+fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ screen: `${radio.toUpperCase()} ${screenWidth}x${screenHeight}`, fonts: fontFamily === 'std212' ? 'EdgeTX v2.12.0 std' : v12 ? 'EdgeTX 92c3224 sml' : 'EdgeTX v2.11.3 ' + (v16 ? 'std' : 'sml'), stringMetatable: false, screenshots: files, status: 'PASS' }, null, 2));

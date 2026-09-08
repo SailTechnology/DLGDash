@@ -1,6 +1,6 @@
 # HelloRadio V12 安装教程
 
-适用于现款 HelloRadio V12、EdgeTX、320×240 横向彩屏。当前为实验适配，尚未通过 V12 实机验收。请在 [beta.4 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4)下载 `DLGDash-Color-v1.0.1-beta.4.zip`，不要误用 Zorro 黑白屏包。
+适用于现款 HelloRadio V12、EdgeTX、320×240 横向彩屏。当前为实验适配，尚未通过 V12 实机验收。请在 [beta.5 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)下载 `DLGDash-Color-v1.0.1-beta.5.zip`，不要误用 Zorro 黑白屏包。
 
 本教程只安装 DLGDash 插件，不升级遥控器或 ELRS 固件。不同批次的系统菜单可能略有区别；若版本页不是 `edgetx-v12`，请先提供版本页照片，不要刷其他机型固件。
 

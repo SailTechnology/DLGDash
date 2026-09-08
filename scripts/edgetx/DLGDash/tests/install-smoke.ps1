@@ -4,7 +4,8 @@ $source = Split-Path -Parent $PSScriptRoot
 $testRoot = Join-Path ([IO.Path]::GetTempPath()) ('DLGDash-install-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $testRoot | Out-Null
 $results = @()
-foreach ($board in @('pa01', 'v16', 'v12', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'zorro', 't14')) {
+$radios = Get-Content -LiteralPath (Join-Path $source 'radios.json') -Raw | ConvertFrom-Json
+foreach ($board in $radios.board) {
     $card = Join-Path $testRoot $board
     foreach ($dir in @('MODELS', 'RADIO', 'BACKUP', 'WIDGETS/DLGDash/profiles', 'SCRIPTS/TELEMETRY')) {
         New-Item -ItemType Directory -Path (Join-Path $card $dir) -Force | Out-Null
@@ -24,7 +25,13 @@ foreach ($board in @('pa01', 'v16', 'v12', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'z
         $args.AllowExperimental = $true
     }
     $installed = (& (Join-Path $source 'Install-DLGDash.ps1') @args) | ConvertFrom-Json
-    if ($installed.Version -ne '1.0.1-beta.4' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
+    $target = $radios | Where-Object board -eq $board | Select-Object -First 1
+    if ($installed.Screen -ne $target.screen) { throw 'Wrong installation screen class' }
+    $forbidden = if ($target.screen -eq 'Monochrome') { @('draw.lua','color-settings.lua','locale.lua','main.lua','lang/zh.lua','lang/zh') } else { @('mono-ui.lua','mono-settings.lua','lang/mono.lua','lang/mono') }
+    foreach ($name in $forbidden) {
+        if (Test-Path -LiteralPath (Join-Path $card "WIDGETS/DLGDash/$name")) { throw "Wrong-screen resource installed: $name" }
+    }
+    if ($installed.Version -ne '1.0.1-beta.5' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
     if (Test-Path -LiteralPath (Join-Path $card 'SCRIPTS/TELEMETRY/DLG.luac')) { throw 'Old cache survived' }
     if (-not (Test-Path -LiteralPath (Join-Path $backup.Backup 'SCRIPTS/TELEMETRY/DLG.luac'))) { throw 'Old cache is not recoverable' }
     $archivedHash = (Get-FileHash -LiteralPath (Join-Path $backup.Backup 'BACKUP/old.yml')).Hash
@@ -38,4 +45,10 @@ foreach ($board in @('pa01', 'v16', 'v12', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'z
     if (-not $rejected) { throw 'Stale model backup was accepted' }
     $results += @{ Board=$board; Status='PASS'; InstalledFiles=$installed.Installed.Count }
 }
+$unknown = Join-Path $testRoot 'unknown'
+$null = New-Item -ItemType Directory -Path (Join-Path $unknown 'RADIO') -Force
+[IO.File]::WriteAllText((Join-Path $unknown 'RADIO/radio.yml'), "board: unknown`n")
+$rejected = $false
+try { & (Join-Path $source 'Install-DLGDash.ps1') -CardRoot $unknown -BackupDirectory $testRoot -AllowExperimental | Out-Null } catch { $rejected = $_.Exception.Message -like '*Unsupported radio*' }
+if (-not $rejected -or (Test-Path -LiteralPath (Join-Path $unknown 'WIDGETS'))) { throw 'Unknown board was modified' }
 [pscustomobject]@{ TemporaryTestRoot=$testRoot; Tests=$results; HardwareUsed=$false } | ConvertTo-Json -Depth 4

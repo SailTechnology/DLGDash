@@ -77,7 +77,8 @@ __begin("font-sentinel"); D.text("1.i", 0, 0, 30, false, false); __fontRegressio
 local Settings = loadScript("/WIDGETS/DLGDash/settings.lua")(P, D)
 local cfg, key = P.defaults(), P.identity()
 eq(cfg.toneSource, ""); eq(cfg.resetSource, ""); eq(cfg.launchMode, 2)
-eq(key, radio .. "_demo_2Eyml"); eq(P.save(key, cfg), true)
+local escapedRadio = string.gsub(radio, "[^%w]", function(c) return string.format("_%02X", string.byte(c)) end)
+eq(key, escapedRadio .. "_demo_2Eyml"); eq(P.save(key, cfg), true)
 do
   local testKey, draft = key .. "_savecheck", P.copy(cfg)
   for name, rule in pairs(P.fields) do

@@ -1,11 +1,11 @@
 param(
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.4'),
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.5'),
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName,
     [ValidateSet('Color', 'Monochrome', 'Universal', 'Zorro')][string]$Target = 'Color'
 )
 $ErrorActionPreference = 'Stop'
 if (-not $PackageName) {
-    $PackageName = "DLGDash-$Target-v1.0.1-beta.4.zip"
+    $PackageName = "DLGDash-$Target-v1.0.1-beta.5.zip"
 }
 $monoOnly = $Target -in @('Monochrome', 'Zorro')
 $colorOnly = $Target -eq 'Color'
@@ -38,6 +38,7 @@ if (-not $colorOnly) { Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLG.lua'
 New-Item -ItemType Directory -Path (Join-Path $widget 'profiles'), (Join-Path $widget 'diagnostics') -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\THIRD_PARTY_NOTICES.md') -Destination $sd
 $docs = Join-Path $PSScriptRoot '..\..\..\docs'
+Copy-Item -LiteralPath (Join-Path $docs 'RADIOS.md') -Destination $sd
 if ($monoOnly) {
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-MONO.md') -Destination (Join-Path $sd 'README.md')
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-MONO.md') -Destination $sd

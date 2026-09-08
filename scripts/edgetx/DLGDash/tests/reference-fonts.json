@@ -1,4 +1,10 @@
 [
+  { "ref": "v2.12.0", "file": "std212/lv_font_en_bold_STD.c", "source": "radio/src/fonts/lvgl/std/lv_font_en_bold_STD.c", "sha256": "6096bc85ea84b736051c928558af0d74751bcccea89c8149225d49497188ebd3" },
+  { "ref": "v2.12.0", "file": "std212/lv_font_en_XXS.c", "source": "radio/src/fonts/lvgl/std/lv_font_en_XXS.c", "sha256": "b90805987c0d8448180af32d1fc7915400d25307bd162d8dafca6055c1e6ae51" },
+  { "ref": "v2.12.0", "file": "std212/lv_font_en_XS.c", "source": "radio/src/fonts/lvgl/std/lv_font_en_XS.c", "sha256": "5fc6f8e86eae55fbcc49b08abfd6362e9d465b2f362ff45d4098b70934e0293f" },
+  { "ref": "v2.12.0", "file": "std212/lv_font_en_L.c", "source": "radio/src/fonts/lvgl/std/lv_font_en_L.c", "sha256": "2317325b66e9fe6a5648f3c90bca5bc542cbdaff68e29fe673b196cbd5f414fc" },
+  { "ref": "v2.12.0", "file": "std212/lv_font_en_bold_XL.c", "source": "radio/src/fonts/lvgl/std/lv_font_en_bold_XL.c", "sha256": "63e6581b36b6e8da3317c7a8e4f61f4dd9d0bdf4832f84f92ad7b9459eaf41aa" },
+  { "ref": "v2.12.0", "file": "std212/lv_font_en_bold_XXL.c", "source": "radio/src/fonts/lvgl/std/lv_font_en_bold_XXL.c", "sha256": "ff00182e46786bc232389f5b4c5b374109abf6691b68c9e0ad3f2b27ddaede14" },
   { "ref": "92c3224699b545a47acaf8bd301b0ab4f2b91848", "file": "v12/lv_font_en_bold_STD.c", "source": "radio/src/fonts/lvgl/sml/lv_font_en_bold_STD.c", "sha256": "9b22f2c5056d1b8c976bdb999f6b64e6c8900063c1f1cca3ff62f3abbd21f979" },
   { "ref": "92c3224699b545a47acaf8bd301b0ab4f2b91848", "file": "v12/lv_font_en_XXS.c", "source": "radio/src/fonts/lvgl/sml/lv_font_en_XXS.c", "sha256": "42f4abd9210f6c7062d8baf01eec8803ac71f1f947f0df3e204fc80d909654bf" },
   { "ref": "92c3224699b545a47acaf8bd301b0ab4f2b91848", "file": "v12/lv_font_en_XS.c", "source": "radio/src/fonts/lvgl/sml/lv_font_en_XS.c", "sha256": "7f3c3a0d413a9d88c53b3aeab98502944e87d2bd924295923238415f17d2878d" },
