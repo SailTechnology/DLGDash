@@ -11,6 +11,7 @@ Use Linux/WSL, GCC and Bash. Point the build at an existing checkout:
 bash tests/edgetx-vm/build.sh /path/to/edgetx/radio/src/thirdparty/Lua/src /absolute/path/edgetx-vm
 /absolute/path/edgetx-vm tests/edgetx-vm/draw.lua /absolute/path/DLGDash
 /absolute/path/edgetx-vm test_v16.lua /absolute/path/DLGDash
+/absolute/path/edgetx-vm test_mono.lua /absolute/path/DLGDash
 ```
 
 `draw.lua` sweeps 64 Lua call depths with an allocator that moves resized
@@ -36,6 +37,13 @@ LVGL focus, actual RF telemetry, firmware scheduling, fonts or the private V16
 for real-font PNG bounds checks and the upstream native memory harness for
 allocation regression; all still require hardware ground acceptance.
 
+The monochrome command uses T14 / 128x64 / EdgeTX 2.10 API fixtures. It traverses
+both dashboard pages, all Chinese/English settings and pickers, saving and model
+changes. Its C stubs check numeric drawing coordinates and bitmap paths, not
+actual bitmap pixels. `node tests/run-mono.cjs --t14` separately checks those
+pixels with reference fonts, including fixed-width spacing and screen bounds.
+
 The harness replaces library initialization and radio C APIs only. ROM-backed
-math/string/table libraries and the parser/VM/GC are the official sources.
+math/string libraries and the parser/VM/GC are the official sources. The optional
+table library is deliberately not registered, matching the T14 save failure.
 Compiler sources and host binaries are never included in SD installation ZIPs.

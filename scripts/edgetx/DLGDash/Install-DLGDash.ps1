@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $radioFile)) { throw 'Not an EdgeTX SD card' }
 $radioText = Get-Content -LiteralPath $radioFile -Raw
 if ($radioText -notmatch '(?m)^board:\s*([^\r\n]+)\s*$') { throw 'Radio board is missing' }
 $board = $Matches[1].Trim()
-if ($board -notin @('pa01', 'v16', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'zorro')) { throw "Unsupported radio board: $board" }
+if ($board -notin @('pa01', 'v16', 'v12', 'x9d', 'x9d+', 'x9d+2019', 'gx12', 'zorro', 't14')) { throw "Unsupported radio board: $board" }
 if ($board -ne 'pa01' -and -not $AllowExperimental) { throw 'Experimental radios require explicit -AllowExperimental; ground validation is pending' }
 $manifest = Get-Content -LiteralPath (Join-Path $backup 'manifest.json') -Raw | ConvertFrom-Json
 $flightFiles = @($manifest | Where-Object { $_.Path -like 'MODELS\*' -or $_.Path -like 'RADIO\*' })
@@ -33,6 +33,7 @@ $toolDir = Join-Path $card 'SCRIPTS\TOOLS'
 $telemetryDir = Join-Path $card 'SCRIPTS\TELEMETRY'
 $sources = @('compat.lua', 'profile.lua', 'core.lua', 'draw.lua', 'settings.lua', 'settings-pages.lua', 'color-settings.lua', 'main.lua', 'locale.lua', 'diagnostics.lua', 'mono-ui.lua', 'mono-settings.lua', 'DLGSetup.lua', 'DLG.lua')
 $languageRoot = Join-Path $PSScriptRoot 'lang'
+for ($page = 1; $page -le 10; $page++) { $sources += "pages/$page.lua" }
 if (-not (Test-Path -LiteralPath (Join-Path $languageRoot 'zh.lua'))) { throw 'Missing Chinese language pack' }
 foreach ($file in Get-ChildItem -LiteralPath $languageRoot -Recurse -File) {
     $sources += [IO.Path]::GetRelativePath($PSScriptRoot, $file.FullName)
@@ -64,7 +65,7 @@ foreach ($entry in @($flightFiles) + @($profileFiles)) {
     if ((Get-FileHash -LiteralPath (Join-Path $card $entry.Path) -Algorithm SHA256).Hash -ne $entry.SHA256) { throw "Model/radio verification failed: $($entry.Path)" }
 }
 $result = [pscustomobject]@{
-    Version = '1.0.1-beta.3'
+    Version = '1.0.1-beta.4'
     Board = $board
     Card = $card
     Backup = $backup

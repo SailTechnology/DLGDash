@@ -1,8 +1,21 @@
 -- Keep compatibility local to this plugin; never replace firmware globals.
 local A = { value = getSourceValue, output = getOutputValue }
+-- Some small-radio builds omit the optional table library entirely.
+A.concat = table and table.concat or function(values, separator)
+  local text = ""
+  for i = 1, #values do text = text .. (i == 1 and "" or separator) .. values[i] end
+  return text
+end
+A.sort = table and table.sort or function(values)
+  for i = 2, #values do
+    local value, j = values[i], i - 1
+    while j > 0 and values[j] > value do values[j + 1] = values[j]; j = j - 1 end
+    values[j + 1] = value
+  end
+end
 local _, _, major, minor = getVersion()
 A.toneVolume = type(major) == "number" and type(minor) == "number"
-  and (major > 2 or major == 2 and minor >= 11)
+  and (major > 2 or major == 2 and minor >= 10)
 A.legacy = not getSourceValue
 A.mixedOutputs = not getOutputValue
 if not A.value then

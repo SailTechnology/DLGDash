@@ -43,7 +43,7 @@ function T.row(s, config)
     s.byId.value or "", s.byId.current, s.byId.fresh, s.namedLegacy or "", centi(s.named.value),
     s.minimum.value or "", s.maximum.value or "", s.tx.value or "" }
   for i, value in ipairs(fields) do fields[i] = csv(value) end
-  return (table.concat(fields, ","))
+  return (P.api.concat(fields, ","))
 end
 function T.save(key, rows)
   if not key or #rows ~= T.count then return false, "Incomplete record" end
@@ -55,7 +55,7 @@ function T.save(key, rows)
     if existing then io.close(existing) else path = candidate; break end
   end
   if not path then return false, "SD write failed" end
-  local text = header .. "\n" .. table.concat(rows, "\n") .. "\n"
+  local text = header .. "\n" .. P.api.concat(rows, "\n") .. "\n"
   local f = io.open(path, "w")
   if not f then return false, "SD write failed" end
   local ok = pcall(io.write, f, text)

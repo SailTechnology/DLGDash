@@ -1,12 +1,14 @@
 param(
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.3'),
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.4'),
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName,
-    [ValidateSet('Universal', 'Zorro')][string]$Target = 'Universal'
+    [ValidateSet('Color', 'Monochrome', 'Universal', 'Zorro')][string]$Target = 'Color'
 )
 $ErrorActionPreference = 'Stop'
 if (-not $PackageName) {
-    $PackageName = if ($Target -eq 'Zorro') { 'DLGDash-Zorro-v1.0.1-beta.3.zip' } else { 'DLGDash-v1.0.1-beta.3.zip' }
+    $PackageName = "DLGDash-$Target-v1.0.1-beta.4.zip"
 }
+$monoOnly = $Target -in @('Monochrome', 'Zorro')
+$colorOnly = $Target -eq 'Color'
 $output = [IO.Path]::GetFullPath($OutputDirectory)
 $stage = Join-Path $output ('package-' + [IO.Path]::GetRandomFileName())
 $sd = Join-Path $stage 'SD'
@@ -14,35 +16,48 @@ $widget = Join-Path $sd 'WIDGETS\DLGDash'
 $tool = Join-Path $sd 'SCRIPTS\TOOLS'
 $telemetry = Join-Path $sd 'SCRIPTS\TELEMETRY'
 New-Item -ItemType Directory -Path $widget, $tool, $telemetry -Force | Out-Null
-$runtime = @('compat.lua', 'profile.lua', 'core.lua', 'settings.lua', 'settings-pages.lua', 'diagnostics.lua', 'mono-ui.lua', 'mono-settings.lua')
-if ($Target -eq 'Universal') { $runtime += @('draw.lua', 'color-settings.lua', 'main.lua', 'locale.lua') }
+$runtime = @('compat.lua', 'profile.lua', 'core.lua', 'settings.lua', 'settings-pages.lua', 'diagnostics.lua')
+if (-not $colorOnly) { $runtime += @('mono-ui.lua', 'mono-settings.lua') }
+if (-not $monoOnly) { $runtime += @('draw.lua', 'color-settings.lua', 'main.lua', 'locale.lua') }
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'pages') -Destination $widget -Recurse
 foreach ($name in $runtime) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $widget $name) -Force
 }
-if ($Target -eq 'Zorro') {
+if ($monoOnly -or $colorOnly) {
     $lang = Join-Path $widget 'lang'
     New-Item -ItemType Directory -Path $lang | Out-Null
-    foreach ($name in @('mono.lua', 'mono', 'OFL.txt')) {
+    $assets = if ($monoOnly) { @('mono.lua', 'mono', 'OFL.txt') } else { @('zh.lua', 'zh', 'OFL.txt') }
+    foreach ($name in $assets) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('lang/' + $name)) -Destination $lang -Recurse
     }
 } else {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'lang') -Destination $widget -Recurse -Force
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLGSetup.lua') -Destination $tool -Force
-Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLG.lua') -Destination $telemetry -Force
+if (-not $colorOnly) { Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'DLG.lua') -Destination $telemetry -Force }
 New-Item -ItemType Directory -Path (Join-Path $widget 'profiles'), (Join-Path $widget 'diagnostics') -Force | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\THIRD_PARTY_NOTICES.md') -Destination $sd
 $docs = Join-Path $PSScriptRoot '..\..\..\docs'
-if ($Target -eq 'Zorro') {
-    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination (Join-Path $sd 'README.md')
+if ($monoOnly) {
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-MONO.md') -Destination (Join-Path $sd 'README.md')
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-MONO.md') -Destination $sd
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination $sd
     New-Item -ItemType Directory -Path (Join-Path $sd 'images') | Out-Null
-    foreach ($name in @('zorro-large.png', 'zorro-servos-large.png', 'zorro-settings-large.png')) {
-        Copy-Item -LiteralPath (Join-Path $docs ('images/' + $name)) -Destination (Join-Path $sd 'images')
+    foreach ($file in Get-ChildItem -LiteralPath (Join-Path $docs 'images') -File | Where-Object { $_.Name -match '^(x9d|gx12|zorro|t14).*large\.png$' }) {
+        Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $sd 'images')
+    }
+} elseif ($colorOnly) {
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-COLOR.md') -Destination (Join-Path $sd 'README.md')
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-COLOR.md') -Destination $sd
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-V12.md') -Destination $sd
+    New-Item -ItemType Directory -Path (Join-Path $sd 'images') | Out-Null
+    foreach ($file in Get-ChildItem -LiteralPath (Join-Path $docs 'images') -File | Where-Object { $_.Name -match '^(pa01|v16|v12).*\.png$' }) {
+        Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $sd 'images')
     }
 } else {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'README.md') -Destination $sd -Force
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-BEGINNER.md') -Destination $sd
+    Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-V12.md') -Destination $sd
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination $sd
     Copy-Item -LiteralPath (Join-Path $docs 'images') -Destination $sd -Recurse
 }

@@ -2,11 +2,18 @@
 
 DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、四/六路舵量、历史曲线和升降提示音。
 
-[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 专用教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
+[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 专用教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载兼容测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4) · [原 v1.0](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0)
 
-**V16、PA01、X9D 系列、GX12 下载 `DLGDash-v1.0.1-beta.3.zip`；Zorro 下载 `DLGDash-Zorro-v1.0.1-beta.3.zip`。二选一，不需要叠加安装。**
+**按屏幕选择一个包，不叠加安装：**
 
-beta.3 修复 V16 设置页选源时的绘图报错，界面切换不再直接丢弃未保存的设置，并保留 Zorro 的设置入口修复。V16 约 45 秒返回的实机现象仍需按[发布页步骤](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3)复测，测试版请先在地面验证。
+| 屏幕 | 机型 | 下载 |
+| --- | --- | --- |
+| 彩屏 | PA01、V16、V12 | `DLGDash-Color-v1.0.1-beta.4.zip` |
+| 黑白屏 | X9D 系列、GX12、Zorro、T14 | `DLGDash-Monochrome-v1.0.1-beta.4.zip` |
+
+黑白屏包去掉彩屏资源以节省存储；Lua 运行内存优化也已包含。Zorro 不再需要单独的机型包。
+
+beta.4 汇总 V16 绘图兼容、黑白屏设置内存及保存修复，新增 T14、V12 实验适配。旧版用户请先备份、更新全部插件文件并清理旧编译缓存，再重启复测；[发布页有完整升级步骤](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4)。不要求先刷 EdgeTX 或 ELRS 固件。
 
 ## 选择你的遥控器
 
@@ -14,9 +21,17 @@ beta.3 修复 V16 设置页选源时的绘图报错，界面切换不再直接�
 | --- | --- | --- |
 | PA01 | 彩屏主屏，添加 DLGDash 控件 | 有前期实机反馈，更新后需复查 |
 | HelloRadio V16 | 彩屏主屏，添加 DLGDash 控件 | 2.10.1 兼容修复，待实机复测 |
+| HelloRadio V12 | 320×240 彩屏主屏，滚轮操作 | 实验适配，待实机验收 |
 | FrSky X9D / X9D Plus / Plus 2019 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
 | RadioMaster GX12 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
 | RadioMaster Zorro | 模型的 Display 页面，选择 Script → DLG | 新增旧版 EdgeTX 兼容测试 |
+| Jumper T14 | 模型的 Display 页面，选择 Script → DLG | 内存和保存兼容修复，待实机复测 |
+
+T14 使用黑白屏包；操作见[黑白屏安装教程](docs/INSTALL-MONO.md)。
+
+V12 使用彩屏包，按 [V12 安装教程](docs/INSTALL-V12.md)操作。现款 V12 是横向小彩屏，不按 V16 或黑白屏教程安装。
+
+其他黑白屏请先核对 EdgeTX 版本与屏幕尺寸。通用版已针对缺少 `table` 库的固件加入保存兼容处理，但未知机型仍需验证按键、菜单、内存和遥测，不能仅凭同为黑白屏就保证可用。
 
 先在 SYS → VERSION 查看 **EdgeTX 版本**，不要把 ELRS 版本当作系统版本。Zorro 的 EdgeTX 2.7.1 已加入兼容测试，不要求为了试用先刷固件。OpenTX、Ethos 尚未验证。
 
@@ -37,6 +52,8 @@ beta.3 修复 V16 设置页选源时的绘图报错，界面切换不再直接�
 ![PA01 飞行仪表](docs/images/pa01.png)
 
 ![V16 飞行仪表](docs/images/v16.png)
+
+![V12 六舵机仪表](docs/images/v12-six.png)
 
 ![X9D 飞行总览](docs/images/x9d-large.png)
 

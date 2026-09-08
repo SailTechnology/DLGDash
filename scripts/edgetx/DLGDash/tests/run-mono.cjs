@@ -3,8 +3,9 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const { lua, lauxlib, lualib, to_luastring, to_jsstring } = require('fengari');
 const { PNG } = require('pngjs');
-const radio = process.argv.includes('--x9d') ? 'x9d' : process.argv.includes('--zorro') ? 'zorro' : 'gx12';
+const radio = process.argv.includes('--x9d') ? 'x9d' : process.argv.includes('--zorro') ? 'zorro' : process.argv.includes('--t14') ? 't14' : 'gx12';
 const legacy = process.argv.includes('--legacy');
+const minor = legacy ? 7 : radio === 't14' ? 10 : 11;
 const width = radio === 'x9d' ? 212 : 128, height = 64;
 const root = path.resolve(__dirname, '..');
 const sdIndex = process.argv.indexOf('--sd-root');
@@ -22,7 +23,10 @@ const font = [PNG.sync.read(fs.readFileSync(path.join(__dirname, 'reference/mono
 const L = lauxlib.luaL_newstate(); lualib.luaL_openlibs(L);
 let image, bounds = [], commands = [], name, frames = [];
 function str(i) { return to_jsstring(lua.lua_tolstring(L, i)); }
-function num(i) { return lua.lua_tonumber(L, i); }
+function num(i) {
+  assert.equal(lua.lua_type(L, i), lua.LUA_TNUMBER, 'LCD argument ' + i + ' must be a number');
+  return lua.lua_tonumber(L, i);
+}
 function expose(key, fn) {
   lua.lua_pushjsfunction(L, () => {
     try { return fn(); } catch (e) { return lauxlib.luaL_error(L, to_luastring(key + ': ' + e.message)); }
@@ -39,7 +43,7 @@ function textBounds(b) {
   for (const a of bounds) assert(!(b.x < a.x + a.w && b.x + b.w > a.x && b.y < a.y + a.h && b.y + b.h > a.y), name + ': overlap ' + b.text + ' / ' + a.text);
   bounds.push(b); commands.push(b);
 }
-expose('__radio', () => { lua.lua_pushstring(L, to_luastring(radio)); lua.lua_pushinteger(L, width); lua.lua_pushboolean(L, legacy); return 3; });
+expose('__radio', () => { lua.lua_pushstring(L, to_luastring(radio)); lua.lua_pushinteger(L, width); lua.lua_pushboolean(L, legacy); lua.lua_pushinteger(L, minor); return 4; });
 expose('__begin', () => { name = str(1); image = new PNG({ width, height }); image.data.fill(255); bounds = []; commands = []; return 0; });
 expose('__clear', () => { if (image) { image.data.fill(255); bounds = []; commands = []; } return 0; });
 // Fengari delegates memory to JS; the native memory runner exercises real GC.
@@ -119,4 +123,4 @@ expose('loadScript', () => {
 const spec = fs.readFileSync(path.join(root, 'test_mono.lua'));
 if (lauxlib.luaL_loadbuffer(L, spec, spec.length, to_luastring('@test_mono.lua')) !== lua.LUA_OK || lua.lua_pcall(L, 0, 0, 0) !== lua.LUA_OK) throw Error(str(-1));
 console.log(`${radio}: ${frames.length} native bitmap-font renders, zero overlaps or out-of-screen pixels.`);
-fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ radio, width, height, frames, status: 'PASS', hardware: false }, null, 2));
+fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ radio, firmware: '2.' + minor, width, height, frames, status: 'PASS', hardware: false }, null, 2));

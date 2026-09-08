@@ -2,7 +2,11 @@
 
 第一次安装请先按安装包内的 **INSTALL-BEGINNER.md** 操作。本页用于安装后查找参数。
 
-当前兼容测试版为 [v1.0.1-beta.3](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3)。Zorro 用户请下载 DLGDash-Zorro-v1.0.1-beta.3.zip，其他机型选 DLGDash-v1.0.1-beta.3.zip。此版修复 V16 设置页绘图报错并保留 Zorro 设置入口修复，仍需地面验证，不需要先升级固件。
+当前兼容测试版为 [v1.0.1-beta.4](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4)。PA01、V16、V12 下载 DLGDash-Color-v1.0.1-beta.4.zip；X9D、GX12、Zorro、T14 下载 DLGDash-Monochrome-v1.0.1-beta.4.zip。本版包含 V16 绘图、黑白屏内存和保存兼容修复，仍需地面验证，不需要先升级固件。
+
+T14 使用黑白屏包，包含设置内存与保存修复、EdgeTX 2.10 独立音量选项；按 INSTALL-MONO.md 完成地面检查。
+
+V12 新增 320×240、滚轮按键实验适配，请按彩屏包内 `INSTALL-V12.md` 安装。无需 App Mode，不需要触摸操作。V12 尚未完成实机验收。黑白屏包已包含缺少 `table` 库时的保存修复。
 
 ## 打开设置
 
@@ -30,6 +34,8 @@
 | MIX | 旧固件显示的是混控量，不是最终舵机输出 |
 
 黑白屏转动滚轮切换总览与舵量两页。没有传感器或没有回传时显示横线，不是安装失败。
+
+黑白屏设置菜单会暂停插件的曲线采样、发射跟踪和提示音，退出后恢复；遥控器控制、原生计时器及原生遥测不暂停。曲线会断开未记录的时段，未完成的发射不会据此猜测高度。请在地面设置。
 
 ## 第 1 页：电池
 

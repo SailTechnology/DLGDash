@@ -62,6 +62,7 @@ function S.run(s, event, touch, w, h)
       elseif touch.y >= footer then s.focus = #fields + 1 + math.min(3, math.floor(touch.x / (w / 4))); activate(s) end
     end
   end
+  fields = nil
   fields = s.pages[s.page].fields
   D.language(s.config.language)
   -- Saving two verified SD slots and drawing every row can exceed 20k on PA01.

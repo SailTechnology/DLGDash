@@ -50,3 +50,23 @@ Both native scenarios now remove `_G`, while retaining the loader privately for
 the host harness. The monochrome suite reproduces the old failure before the
 event-constant fix and tests absent optional events. A passing desktop Lua heap
 test alone cannot establish firmware global-table availability.
+
+The T14 reported `DLG.lua:42 not enough memory` while opening settings with
+only one DLG telemetry page configured. The telemetry entry now unloads flight
+code before compiling settings, retains its flight state, then drops settings
+before reloading the dashboard on a later callback. Sampling pauses in menus;
+resume invalidates derivative/launch continuity through the core's gap handling.
+The `telemetry` scenario also tests returning to the dashboard after saving.
+Use `telemetry-history` to accumulate a graph before opening menus. These remain
+host heap tests, not measurements of the radio's free RAM.
+
+The next T14 retest reached `settings.lua:31 not enough memory`, then on another
+attempt entered settings but failed Save with `field 'table' (a nil value)`.
+The old page factory constructed only one page but compiled all ten definitions.
+Definitions now live in separate `pages/1.lua` through `pages/10.lua`; the previous
+page is released before compiling the next. Both package targets include them.
+The native scenarios and monochrome suite now remove the optional table library
+as well as `_G`. Plugin-local sort/concat fallbacks preserve the checksummed,
+two-slot profile format; history expiry and label eviction need no table library.
+The backed-up old runtime reproduces a save failure at `profile.lua:106` with
+this fixture. Do not treat a successful cached retry as cold-load acceptance.

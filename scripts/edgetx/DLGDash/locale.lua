@@ -16,7 +16,11 @@ local function bitmap(id, size)
   if width and height and width > 0 and height == size then
     entry = { mask = Bitmap.toMask(image), w = width, h = height }
   end
-  if #order >= 24 then cache[table.remove(order, 1)] = nil end
+  if #order >= 24 then
+    cache[order[1]] = nil
+    for i = 1, #order - 1 do order[i] = order[i + 1] end
+    order[#order] = nil
+  end
   order[#order + 1], cache[key] = key, entry
   return entry
 end

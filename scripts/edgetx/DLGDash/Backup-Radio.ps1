@@ -9,7 +9,7 @@ $target = Join-Path $BackupRoot ((Get-Date -Format 'yyyy-MM-dd_HHmmss') + '_befo
 if (Test-Path -LiteralPath $target) { throw 'Backup directory already exists' }
 New-Item -ItemType Directory -Path $target | Out-Null
 $records = @()
-foreach ($relative in @('MODELS', 'RADIO', 'WIDGETS\DLGDash', 'SCRIPTS\TOOLS\DLGSetup.lua', 'SCRIPTS\TOOLS\DLGSetup.luac', 'SCRIPTS\TELEMETRY\DLG.lua', 'SCRIPTS\TELEMETRY\DLG.luac', 'MODELS.zip')) {
+foreach ($relative in @('MODELS', 'RADIO', 'BACKUP', 'WIDGETS\DLGDash', 'SCRIPTS\TOOLS\DLGSetup.lua', 'SCRIPTS\TOOLS\DLGSetup.luac', 'SCRIPTS\TELEMETRY\DLG.lua', 'SCRIPTS\TELEMETRY\DLG.luac', 'MODELS.zip')) {
     $source = Join-Path $card $relative
     if (-not (Test-Path -LiteralPath $source)) { continue }
     $files = if (Test-Path -LiteralPath $source -PathType Container) {
@@ -35,5 +35,6 @@ Compress-Archive -LiteralPath $target -DestinationPath $archive
     Archive = $archive
     Files = $records.Count
     ModelFiles = @($records | Where-Object { $_.Path -like 'MODELS\*' }).Count
+    ArchivedModelFiles = @($records | Where-Object { $_.Path -like 'BACKUP\*' }).Count
     SHA256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash
 } | ConvertTo-Json

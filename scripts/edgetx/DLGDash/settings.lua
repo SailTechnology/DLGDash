@@ -28,7 +28,9 @@ function S.new(key, config, onSave, onClose)
     __index = function(_, index)
       if type(index) ~= "number" or index < 1 or index > 10 then return nil end
       if cachedIndex ~= index then
-        cached = assert(loadScript("/WIDGETS/DLGDash/settings-pages.lua"))(index, P, option, field, numberChoices, fromValues)
+        cached, cachedIndex = nil, nil
+        if LCD_H == 64 and collectgarbage then collectgarbage("collect") end
+        cached = assert(loadScript("/WIDGETS/DLGDash/pages/" .. index .. ".lua"))(P, option, field, numberChoices, fromValues)
         cachedIndex = index
         if LCD_H == 64 and collectgarbage then collectgarbage("collect") end
       end

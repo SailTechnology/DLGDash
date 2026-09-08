@@ -22,11 +22,11 @@ LROT_BEGIN(rotables_meta, NULL, LROT_MASK_INDEX)
   LROT_FUNCENTRY(__index, globals_index)
 LROT_END(rotables_meta, NULL, LROT_MASK_INDEX)
 LROT_BEGIN(rotables, LROT_TABLEREF(rotables_meta), 0)
-  LROT_TABENTRY(_G, base_func)
+  /* Keep _G removable so specs can exercise firmware without that global. */
   LROT_TABENTRY(string, strlib)
   LROT_TABENTRY(math, mathlib)
   LROT_TABENTRY(bit32, bitlib)
-  LROT_TABENTRY(table, tablib)
+  /* Match small-radio builds without the optional table library. */
 LROT_END(rotables, LROT_TABLEREF(rotables_meta), 0)
 LUALIB_API void luaL_openlibs(lua_State *L) {
   luaL_requiref(L, "_G", luaopen_base, 1); lua_pop(L, 1);

@@ -1,0 +1,3 @@
+local P, option, field = ...
+return { title = "LANGUAGE", fields = {
+  field("language", "Language", { option(0, "English"), option(1, "Chinese") }) } }

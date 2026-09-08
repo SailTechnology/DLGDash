@@ -50,11 +50,17 @@ function loadScript(path)
 end
 debug.setmetatable("", nil)
 _G = nil
+table = nil
 __stage("entry")
 tool = assert(loadScript("/WIDGETS/DLGDash/" .. (telemetry and "DLG.lua" or "DLGSetup.lua")))()
 tool.init()
 tool.run(0)
-if telemetry then tool.run(EVT_VIRTUAL_ENTER); tool.run(0) end
+if telemetry then
+  if string.find(__scenario, "history", 1, true) then
+    for i = 1, 400 do clock = clock + 50; tool.background() end
+  end
+  tool.run(EVT_VIRTUAL_ENTER); tool.run(0)
+end
 -- Traverse every field and its largest picker, twice, including Chinese/save.
 local counts = { 3, 4, 3, 3, 4, 4, 4, 4, 1, 0 }
 for cycle = 1, 2 do
@@ -74,6 +80,11 @@ end
 for i = 1, 5 do tool.run(EVT_VIRTUAL_NEXT) end
 tool.run(EVT_VIRTUAL_ENTER)
 tool.run(EVT_VIRTUAL_EXIT)
+if telemetry then
+  tool.run(0)
+  clock = clock + 100
+  tool.run(0)
+end
 assert(next(bytes), "Menu traversal must reach Save and create a profile")
 tool = nil
 collectgarbage("collect")

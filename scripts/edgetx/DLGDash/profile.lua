@@ -103,11 +103,11 @@ end
 function P.encode(config, key, revision)
   local keys, lines = {}, { "DLG5", "id=" .. key, "rev=" .. revision }
   for k in pairs(P.fields) do keys[#keys + 1] = k end
-  table.sort(keys)
+  P.api.sort(keys)
   for _, k in ipairs(keys) do
     lines[#lines + 1] = k .. "=" .. (type(config[k]) == "string" and hex(config[k]) or tostring(config[k]))
   end
-  local body = table.concat(lines, "\n") .. "\n"
+  local body = P.api.concat(lines, "\n") .. "\n"
   return body .. "sum=" .. checksum(body) .. "\n"
 end
 
@@ -167,10 +167,10 @@ function P.stamp(key)
   for _, slot in ipairs({ ".a", ".b" }) do
     local stat = fstat(P.directory .. key .. slot)
     local t = stat and stat.time or {}
-    parts[#parts + 1] = stat and table.concat({ stat.size, t.year or 0, t.mon or 0, t.day or 0,
+    parts[#parts + 1] = stat and P.api.concat({ stat.size, t.year or 0, t.mon or 0, t.day or 0,
       t.hour or 0, t.min or 0, t.sec or 0 }, ":") or "-"
   end
-  return (table.concat(parts, "|"))
+  return (P.api.concat(parts, "|"))
 end
 
 function P.save(key, config)

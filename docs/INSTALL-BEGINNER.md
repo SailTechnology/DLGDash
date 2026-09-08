@@ -2,24 +2,29 @@
 
 按顺序完成：**备份 → 复制文件 → 添加页面 → 设置本机参数 → 地面检查**。不需要改代码，也不需要先刷固件。
 
-Zorro 请按 [Zorro 专用教程](INSTALL-ZORRO.md)安装 **DLGDash-Zorro-v1.0.1-beta.3.zip**。V16 等机型用 **DLGDash-v1.0.1-beta.3.zip**，此版修复 V16 设置页绘图报错。所有机型仍需真机地面验证。下图使用模拟数据；系统菜单名称可能随固件语言不同而略有变化。
+PA01 / V16 / V12 下载 **DLGDash-Color-v1.0.1-beta.4.zip**；X9D / GX12 / Zorro / T14 下载 **DLGDash-Monochrome-v1.0.1-beta.4.zip**。也可直接阅读 [彩屏教程](INSTALL-COLOR.md)或[黑白屏教程](INSTALL-MONO.md)。本版包含 V16 绘图和黑白屏内存、保存修复，仍需真机地面验证。下图使用模拟数据。
 
 ## 1. 先确定安装路线
 
 | 遥控器 | 后面选择哪一步 |
 | --- | --- |
 | PA01、HelloRadio V16 | 第 5A 步：彩屏主屏 |
-| FrSky X9D 系列、RadioMaster GX12、Zorro | 第 5B 步：黑白遥测屏 |
+| HelloRadio V12 | [V12 独立安装教程](INSTALL-V12.md)，使用彩屏包 |
+| FrSky X9D 系列、RadioMaster GX12、Zorro、Jumper T14 | 第 5B 步：黑白遥测屏 |
 
 打开遥控器 **SYS → VERSION / 版本**，记下 EdgeTX 版本。ELRS 3.3.1 等是射频版本，不是这里需要的系统版本。
 
 本教程适用于 EdgeTX。看到 OpenTX 或 Ethos 时先核对兼容性，不要直接套用。GX12 的内置存储按同样方式操作；V16 和 V12 不是同一机型。
 
+beta.4 包含 V12、T14 实验适配和黑白屏保存兼容修复。不要用 beta.2 或其他旧包验证本次修复。其他未列出的黑白屏机型，请先提供 VERSION 页和报错照片，不必为了缺少 `table` 库直接刷固件。
+
+所有实验机型仍需真机地面检查，包括打开设置、保存后重启读取、遥测和提示音。不要把离线测试通过当作已通过飞行验证。
+
 ## 2. 准备与连接
 
 1. 飞机放稳，接收机先断电。不要在电机可能启动或正在飞行时安装。
 2. 遥控器保证电量充足，准备一根能传数据的 USB 线。
-3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.3)，展开 **Assets**。Zorro 下载 **DLGDash-Zorro-v1.0.1-beta.3.zip**；其他机型下载 **DLGDash-v1.0.1-beta.3.zip**。二选一，不要选 Source code，也不要仅下载 SHA256SUMS.txt。
+3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.4)，展开 **Assets**。彩屏选 **DLGDash-Color-v1.0.1-beta.4.zip**，黑白屏选 **DLGDash-Monochrome-v1.0.1-beta.4.zip**。不要选 Source code，也不要仅下载 SHA256SUMS.txt。
 4. 右键 ZIP，选择“全部解压缩”。打开后应看到 **SD** 文件夹，里面有 WIDGETS 和 SCRIPTS。
 5. 遥控器正常开机，接 USB，选择 **USB Storage / USB 存储**。不要选择 Joystick / 游戏控制器。
 6. 在 Windows“此电脑”里打开新出现的内容盘。正确盘通常包含 **MODELS、RADIO、SCRIPTS、SOUNDS**。
@@ -35,11 +40,11 @@ Zorro 请按 [Zorro 专用教程](INSTALL-ZORRO.md)安装 **DLGDash-Zorro-v1.0.1
 1. 在电脑新建文件夹，例如“Zorro_安装前备份_日期”。不要把备份放在遥控器盘上。
 2. 打开遥控器内容盘，复制全部内容到该文件夹。
 3. 等待复制完成，再打开电脑里的备份。
-4. 检查 **MODELS** 中的模型文件和 **RADIO** 文件夹确实存在。
+4. 检查 **MODELS** 中的模型文件和 **RADIO** 文件夹确实存在；有 **BACKUP** 文件夹时也要保留，其中可能有旧模型备份。
 5. 如果以前装过 DLGDash，确认 **WIDGETS/DLGDash** 和两个脚本入口也已备份。
 6. 对比原盘与备份的文件数、大小，确认没有复制失败的提示。
 
-空间不足时，至少备份完整 MODELS、RADIO、已有 WIDGETS/DLGDash，以及 SCRIPTS/TOOLS/DLGSetup 和 SCRIPTS/TELEMETRY/DLG 的文件。
+空间不足时，至少备份完整 MODELS、RADIO、BACKUP（如有）、已有 WIDGETS/DLGDash，以及 SCRIPTS/TOOLS/DLGSetup 和 SCRIPTS/TELEMETRY/DLG 的文件。
 
 **检查：** 拔掉遥控器后，电脑仍能打开备份。未完成备份前，不覆盖原文件。
 
@@ -99,8 +104,8 @@ Windows 可通过“查看 → 显示 → 文件扩展名”显示真实后缀�
 6. 在控件列表中选择 **DLGDash**。
 7. 若弹出 ToneSw、SwHigh、ToneMin、Timer，可先保持默认，稍后统一在 DLG Setup 设置。
 8. 返回主屏，应看到大计时器、电压区和高度区。接收机未供电时显示无数据是正常的。
-9. 若画面区域太小，进入控件 **Full screen / 全屏**，或关闭该页面不需要的顶部栏、滑杆等显示。
-10. 全屏后点 **SET**，或按确认键进入设置。也可以从系统 TOOLS 选择 **DLG Setup**。
+9. 关闭该页面不需要的顶部栏、飞行模式栏、滑杆及微调显示，让 1×1 控件占满画面。**不需要开启 App Mode**；只隐藏显示，不禁用真正的微调或控制功能。
+10. 日常设置可从系统 **TOOLS → DLG Setup** 打开。也可长按仪表选择 **Full screen / 全屏**，再点 **SET** 或按确认键。铺满画面后，直接点仪表不会打开设置；使用上述任一入口。
 
 ![PA01 仪表](images/pa01.png)
 
@@ -108,7 +113,7 @@ Windows 可通过“查看 → 显示 → 文件扩展名”显示真实后缀�
 
 **检查：** 能看到仪表，并能打开 BATTERY 设置页。继续第 6 步。
 
-## 5B. X9D / GX12 / Zorro 添加黑白遥测屏
+## 5B. X9D / GX12 / Zorro / T14 添加黑白遥测屏
 
 1. 确认当前模型，进入 **模型设置**。
 2. 用 PAGE / 翻页键找到 **DISPLAY / 显示**，通常位于 TELEMETRY / 遥测之后。
@@ -130,6 +135,33 @@ Windows 可通过“查看 → 显示 → 文件扩展名”显示真实后缀�
 找不到 DLG 时，检查 `SCRIPTS/TELEMETRY/DLG.lua` 的位置和后缀。不要到彩屏的 Widget 菜单寻找，也不要只从文件管理中执行 DLG.lua 来代替绑定页面。
 
 **检查：** 能进入仪表、切换舵量页、打开设置。
+
+### T14 地面检查
+
+T14 是 [128×64 OLED 黑白屏](https://www.jumper-rc.com/transmitters/t14-2/)，走上面的 **Script → DLG** 路线，不用 1×1 控件或 App Mode。
+
+1. 安全弹出内容盘、拔线并重启，先确认原有模型正常。
+2. 按第 5B 步，为自己选定的测试模型添加 **Script → DLG**。不要覆盖其他遥测脚本。
+3. 回主屏后用遥测快捷键打开 DLG。单 PAGE 键固件通常长按 PAGE；有独立 TELE 键时按 TELE。
+4. 转滚轮切换总览和舵量，按滚轮进入设置。先试选电压源、取消，再试修改并保存。
+5. 第 9 页选 Chinese，保存，重启后确认设置仍在。也要检查 English。
+6. 分别选四舵机、六舵机，检查正负 100% 时字号不跳变，第三排舵量没有超出屏幕。
+7. 进入设置停留 2 分钟，翻页、选源、保存、退出，确认没有报错或自行关闭。
+8. 有高度回传的接收机连接后，再验证曲线、清零按钮、Zoom 结算和升降提示音。没有 Alt 时显示无高度是正常状态。
+
+安装只复制插件，不会自动为模型添加页面，也不会替你设置按钮或舵机映射。只测菜单和显示时，不必给飞机上电。
+
+下面是模拟数据预览，不是真机照片。实际 OLED 可能显示为深底亮字。
+
+![T14 飞行总览](images/t14-large.png)
+
+![T14 六舵机](images/t14-servos-large.png)
+
+![T14 中文音量设置](images/t14-settings-large.png)
+
+本次 T14 测试版已开放 EdgeTX 2.10 的独立提示音音量。跟随系统、静音以及 1～5 档都可在第 8 页选择；较老固件仍使用系统总音量。
+
+黑白屏为节省内存，打开设置期间暂停插件的曲线采样、发射跟踪和提示音；遥控器的控制、原生计时器和原生遥测继续运行。退出设置后恢复采样，曲线不连接中间缺失的时段。请在地面设置，发射过程中不要进入菜单。
 
 ## 6. 先学会保存，再切换中文
 

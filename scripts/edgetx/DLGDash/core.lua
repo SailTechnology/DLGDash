@@ -175,7 +175,13 @@ local function updateHistory(s)
     s.history[#s.history + 1] = { tick = s.now, altitude = s.graphAltitude, gap = s.graphGap }
     s.historyTick, s.graphGap = s.now, nil
   end
-  while #s.history > 0 and C.elapsed(s.now, s.history[1].tick) > cfg.window * 100 do table.remove(s.history, 1) end
+  local expired = 0
+  while expired < #s.history and C.elapsed(s.now, s.history[expired + 1].tick) > cfg.window * 100 do expired = expired + 1 end
+  if expired > 0 then
+    local count = #s.history
+    for i = 1, count - expired do s.history[i] = s.history[i + expired] end
+    for i = count - expired + 1, count do s.history[i] = nil end
+  end
 end
 
 local function updateTone(s)
@@ -195,7 +201,7 @@ local function updateTone(s)
   local freq = speed > 0 and clamp(cfg.climbTone + speed * 230, cfg.climbTone + 40, cfg.climbTone + 1180)
     or clamp(cfg.sinkTone + speed * 45, math.max(150, cfg.sinkTone - 200), cfg.sinkTone - 30)
   local duration = math.floor((speed > 0 and 55 or 190) * scale + 0.5)
-  -- EdgeTX 2.11 supports per-tone volume; never change global audio or flush alarms.
+  -- EdgeTX 2.10 supports per-tone volume; never change global audio or flush alarms.
   if cfg.toneVolume == 0 or not s.profile.api.toneVolume then
     playTone(math.floor(freq + 0.5), duration, 20, PLAY_BACKGROUND or 0, 0)
   else

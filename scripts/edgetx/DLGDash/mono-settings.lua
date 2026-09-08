@@ -18,6 +18,7 @@ function S.run(s, event)
     if is(EVT_VIRTUAL_PREV_PAGE) then H.changePage(s, -1) end
     if enter then H.activate(s) elseif exit then H.leave(s) end
   end
+  fields = nil
   fields = s.pages[s.page].fields
   D.language(s.config.language)
   lcd.clear()

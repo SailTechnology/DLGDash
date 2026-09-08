@@ -1,4 +1,4 @@
--- EdgeTX 2.11 monochrome APIs only. No color fonts, masks or widget calls.
+-- Shared EdgeTX monochrome renderer. No color fonts, masks or widget calls.
 local D = { colors = {} }
 local labels, language = nil, 0
 function D.language(value)

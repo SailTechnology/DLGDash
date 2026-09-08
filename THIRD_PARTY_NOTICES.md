@@ -12,6 +12,8 @@ Font project: https://github.com/notofonts/noto-cjk
 
 The test runner downloads selected font assets from the official EdgeTX v2.11.3 source tree. Their source paths and SHA-256 hashes are pinned in `tests/reference-fonts.json`. Downloaded files remain in the ignored `tests/reference` cache and are not redistributed in this repository or the installation ZIP.
 
+V12 tests additionally use the small-display fonts from official EdgeTX commit `92c3224699b545a47acaf8bd301b0ab4f2b91848`, which introduced the current V12 target. These references are pinned by commit and SHA-256 in the same manifest and follow the same test-only distribution rules.
+
 EdgeTX source and licensing: https://github.com/EdgeTX/edgetx/tree/v2.11.3
 
 The displayed test screenshots use those firmware fonts. They are generated diagnostic renders with synthetic flight data, not manufacturer certification or real hardware photographs. EdgeTX, RadioMaster, FrSky and HelloRadio names identify compatibility targets only; no endorsement is implied.

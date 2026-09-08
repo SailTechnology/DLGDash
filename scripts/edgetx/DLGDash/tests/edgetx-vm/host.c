@@ -47,6 +47,16 @@ static int draw_text(lua_State *L) {
   draws++;
   return 0;
 }
+static int draw_pixmap(lua_State *L) {
+  luaL_checknumber(L, 1); luaL_checknumber(L, 2); luaL_checkstring(L, 3);
+  draws++;
+  return 0;
+}
+static int mono_radio(lua_State *L) {
+  lua_pushstring(L, "t14"); lua_pushinteger(L, 128);
+  lua_pushboolean(L, 0); lua_pushinteger(L, 10);
+  return 4;
+}
 static int load_script(lua_State *L) {
   char filename[1024];
   const char *path = luaL_checkstring(L, 1);
@@ -71,6 +81,8 @@ int main(int argc, char **argv) {
   expose(L, "__rect", checked); expose(L, "__line", checked); expose(L, "__text", draw_text);
   expose(L, "__bitmap", bitmap); expose(L, "__bitmapSize", noop); expose(L, "__mask", noop);
   expose(L, "__begin", begin_frame); expose(L, "__end", noop);
+  expose(L, "__radio", mono_radio); expose(L, "__clear", noop);
+  expose(L, "__pixmap", draw_pixmap); expose(L, "__fontRegression", noop);
   expose(L, "__brand", noop); expose(L, "__v16Layout", noop); expose(L, "__altStatus", noop);
   int status = luaL_loadfile(L, argv[1]);
   if (!status) status = lua_pcall(L, 0, 0, 0);

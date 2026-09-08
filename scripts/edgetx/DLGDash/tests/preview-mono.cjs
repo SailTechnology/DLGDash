@@ -11,7 +11,10 @@ const samples = {
   'gx12-settings': 'verification-gx12/row-1-8-1.png',
   zorro: 'verification-zorro-legacy/zorro-0-6-100-1.png',
   'zorro-servos': 'verification-zorro-legacy/zorro-1-6-100-2.png',
-  'zorro-settings': 'verification-zorro-legacy/row-1-8-1.png'
+  'zorro-settings': 'verification-zorro-legacy/row-1-8-1.png',
+  t14: 'verification-t14/t14-0-6-100-1.png',
+  't14-servos': 'verification-t14/t14-1-6-100-2.png',
+  't14-settings': 'verification-t14/row-1-8-1.png'
 };
 fs.mkdirSync(path.join(root, 'docs/images'), { recursive: true });
 for (const [name, file] of Object.entries(samples)) {
