@@ -10,7 +10,8 @@ async function main() {
     const destination = path.join(__dirname, 'reference', item.file);
     if (fs.existsSync(destination) && digest(fs.readFileSync(destination)) === item.sha256) continue;
     let data;
-    for (const host of ['raw', 'api']) {
+    const hosts = process.argv.includes('--api-first') ? ['api', 'raw'] : ['raw', 'api'];
+    for (const host of hosts) {
       try {
         const url = host === 'raw' ? `https://raw.githubusercontent.com/EdgeTX/edgetx/${ref}/${item.source}`
           : `https://api.github.com/repos/EdgeTX/edgetx/contents/${item.source}?ref=${ref}`;
@@ -19,7 +20,7 @@ async function main() {
         data = host === 'raw' ? Buffer.from(await response.arrayBuffer()) : Buffer.from((await response.json()).content, 'base64');
         if (digest(data) !== item.sha256) throw Error('Reference hash mismatch: ' + item.file);
         break;
-      } catch (error) { if (host === 'api') throw error; }
+      } catch (error) { if (host === hosts[hosts.length - 1]) throw error; }
     }
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, data);

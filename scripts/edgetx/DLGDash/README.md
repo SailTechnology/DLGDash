@@ -2,7 +2,7 @@
 
 第一次安装请先按安装包内的 **README.md** 操作。本页用于安装后查找参数。
 
-当前兼容测试版为 [v1.0.1-beta.5](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)。彩屏下载 Color 包，黑白屏下载 Monochrome 包；[完整机型与验证状态](../../../docs/RADIOS.md)。本版扩展常见机型和 480×320 横屏，保留 V16 绘图、黑白屏内存和保存兼容修复，仍需地面验证，不需要先升级固件。
+当前版本为 [v1.1](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)。彩屏下载 Color 包，黑白屏下载 Monochrome 包；[完整机型与验证状态](../../../docs/RADIOS.md)。本版新增 800×480 大屏，扩展 RadioMaster、HelloRadio 等常见机型，保留 V16 绘图、黑白屏内存和保存兼容修复。新机型仍需地面验证，不需要先升级固件。
 
 T14 使用黑白屏包，包含设置内存与保存修复、EdgeTX 2.10 独立音量选项；按 INSTALL-MONO.md 完成地面检查。
 

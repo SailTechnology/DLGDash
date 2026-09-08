@@ -1,5 +1,6 @@
 local D = {}
-local wide = LCD_W == 480 and LCD_H >= 272
+local large = LCD_W >= 800 and LCD_H >= 480
+local wide = LCD_W >= 480 and LCD_H >= 272
 local L = assert(loadScript("/WIDGETS/DLGDash/locale.lua"))()
 function D.language(value) D.lang = value end
 D.colors = {
@@ -40,15 +41,16 @@ end
 
 local function height(value) return value and string.format("%.1f", value) or "--.-" end
 local function metric(x, y, w, h, label, value, color)
-  local labelH = wide and 18 or 16
+  local labelH = large and 30 or wide and 18 or 16
   D.text(label, x + 4, y, w - 8, labelH, c.muted, SMLSIZE, "center")
-  D.text(height(value), x + 3, y + labelH + 1, w - 21, h - labelH - 2, color, DBLSIZE, "right")
-  D.text("m", x + w - 16, y + h - 25, 13, 22, color, BOLD)
+  local unitW, unitH = large and 28 or 16, large and 36 or 25
+  D.text(height(value), x + 3, y + labelH + 1, w - unitW - 5, h - labelH - 2, color, DBLSIZE, "right")
+  D.text("m", x + w - unitW, y + h - unitH, unitW - 3, unitH - 3, color, BOLD)
 end
 local function battery(s, x, y, w, h)
   local b = s.data.battery or {}
   local color = b.voltage and (b.low and c.red or c.green) or c.muted
-  local labelH, fullH = wide and 18 or 16, wide and 21 or 19
+  local labelH, fullH = large and 30 or wide and 18 or 16, large and 34 or wide and 21 or 19
   D.text(b.label or "BATTERY", x + 4, y, w - 8, labelH, c.muted, SMLSIZE, "center")
   D.text(b.voltage and string.format("%.2fV", b.voltage) or "--.--V", x + 4, y + labelH, w - 8, h - labelH - fullH, color, DBLSIZE, "center")
   D.text(b.full and string.format(b.hv and "FULL /%.2fV" or "FULL /%.1fV", b.full) or "FULL /--.-V", x + 4, y + h - fullH, w - 8, fullH, c.text, BOLD, "center")
@@ -56,9 +58,9 @@ end
 local function servo(s, x, y, w, h, index)
   local value = s.data.channels[index]
   local color = ({ c.amber, c.cyan, c.green, c.pink, c.amber, c.cyan })[index]
-  D.text(s.profile.roles[index], x + 4, y + 1, wide and 30 or 21, h - 5, color, BOLD)
+  D.text(s.profile.roles[index], x + 4, y + 1, large and 50 or wide and 30 or 21, h - 5, color, BOLD)
   -- Reserve the same signed three-digit slot for every output; % has its own slot.
-  local valueX, unitW = wide and 39 or 28, wide and 14 or 10
+  local valueX, unitW = large and 62 or wide and 39 or 28, large and 23 or wide and 14 or 10
   local valueWidth = w - valueX - unitW - 2
   local maxWidth, maxHeight = lcd.sizeText("+888", MIDSIZE)
   local font = maxWidth <= valueWidth and maxHeight <= h - 5 and MIDSIZE or BOLD
@@ -79,10 +81,10 @@ local function servo(s, x, y, w, h, index)
 end
 local function graph(s, core, x, y, w, h)
   D.line(x, y, x, y + h - 1)
-  local labelH, inset = wide and 21 or 17, wide and 32 or 25
-  D.text(s.config.window .. "s", x + 5, y, wide and 48 or 38, labelH, c.muted, SMLSIZE)
+  local labelH, inset = large and 34 or wide and 21 or 17, large and 52 or wide and 32 or 25
+  D.text(s.config.window .. "s", x + 5, y, large and 80 or wide and 48 or 38, labelH, c.muted, SMLSIZE)
   local speed = s.data.vario
-  local speedX = wide and 59 or 45
+  local speedX = large and 98 or wide and 59 or 45
   D.text(speed and string.format("%+.1fm/s", speed) or "--m/s", x + speedX, y, w - speedX - 5, labelH,
     speed and (speed > 0 and c.green or c.amber) or c.muted, BOLD, "right")
   local px, py, pw, ph = x + inset, y + labelH + 3, w - inset - 5, h - labelH - 8
@@ -98,8 +100,9 @@ local function graph(s, core, x, y, w, h)
   local range = low and math.max(4, (high - low) * 1.15) or 4
   low, high = mid - range / 2, mid + range / 2
   for i = 0, 2 do D.line(px, py + ph * i / 2, px + pw - 1, py + ph * i / 2) end
-  D.text(string.format("%.0f", high), x + 2, py, inset - 4, 13, c.muted, TINSIZE, "right")
-  D.text(string.format("%.0f", low), x + 2, py + ph - 13, inset - 4, 13, c.muted, TINSIZE, "right")
+  local axisH = large and 22 or 13
+  D.text(string.format("%.0f", high), x + 2, py, inset - 4, axisH, c.muted, TINSIZE, "right")
+  D.text(string.format("%.0f", low), x + 2, py + ph - axisH, inset - 4, axisH, c.muted, TINSIZE, "right")
   local lastX, lastY, lastTick
   for _, point in ipairs(s.history) do
     local age = core.elapsed(s.now, point.tick)
@@ -112,24 +115,26 @@ local function graph(s, core, x, y, w, h)
       lastX, lastY, lastTick = pointX, pointY, point.tick
     else lastX, lastY, lastTick = nil, nil, nil end
   end
-  if s.graphReset then D.text("RESET", px + 2, py + ph / 2 - 10, pw - 4, 20, c.muted, SMLSIZE, "center")
-  elseif not s.data.altitude then D.text("NO ALT", px + 2, py + ph / 2 - 10, pw - 4, 20, c.muted, SMLSIZE, "center") end
+  local statusH = large and 34 or 20
+  if s.graphReset then D.text("RESET", px + 2, py + ph / 2 - statusH / 2, pw - 4, statusH, c.muted, SMLSIZE, "center")
+  elseif not s.data.altitude then D.text("NO ALT", px + 2, py + ph / 2 - statusH / 2, pw - 4, statusH, c.muted, SMLSIZE, "center") end
 end
 function D.dashboard(s, core, zone, fullscreen)
   D.language(s.config.language)
   local x, y, w, h = zone.x or 0, zone.y or 0, zone.w, zone.h
   D.fill(x, y, w, h, c.bg)
-  if w < 300 or h < 220 then
+  if w < (large and 700 or 300) or h < (large and 380 or 220) then
     D.text("DLG: full-screen 1x1", x + 4, y, w - 8, h, c.amber, BOLD, "center"); return
   end
   local header, timerH, statsH = 20, 56, 70
   if wide then header, timerH, statsH = 24, h >= 260 and 70 or 56, h >= 260 and 82 or 70 end
+  if large then header, timerH, statsH = 40, h >= 440 and 116 or 90, h >= 440 and 136 or 120 end
   D.fill(x, y, w, header, c.band)
-  D.text((s.profile.api.mixedOutputs and "MIX " or "DLG ") .. (s.modeName or "--"), x + 4, y, w - (wide and 198 or 170), header, c.text, BOLD)
-  D.text(s.data.link and "LINK" or "LOST", x + w - (wide and 192 or 164), y, wide and 52 or 42, header, s.data.link and c.green or c.red, SMLSIZE)
+  D.text((s.profile.api.mixedOutputs and "MIX " or "DLG ") .. (s.modeName or "--"), x + 4, y, w - (large and 320 or wide and 198 or 170), header, c.text, BOLD)
+  D.text(s.data.link and "LINK" or "LOST", x + w - (large and 314 or wide and 192 or 164), y, large and 88 or wide and 52 or 42, header, s.data.link and c.green or c.red, SMLSIZE)
   local audible = s.toneActive and s.config.toneVolume ~= -1
-  D.text(audible and "BEEP" or "MUTE", x + w - (wide and 136 or 118), y, wide and 62 or 44, header, audible and c.green or c.muted, SMLSIZE)
-  D.text(fullscreen and "SET" or "Sail", x + w - 67, y, 62, header, fullscreen and c.amber or c.muted, BOLD, "right")
+  D.text(audible and "BEEP" or "MUTE", x + w - (large and 218 or wide and 136 or 118), y, large and 100 or wide and 62 or 44, header, audible and c.green or c.muted, SMLSIZE)
+  D.text(fullscreen and "SET" or "Sail", x + w - (large and 108 or 67), y, large and 103 or 62, header, fullscreen and c.amber or c.muted, BOLD, "right")
   D.text(core.timer(s.data.timer), x + 4, y + header, w - 8, timerH, s.data.timer and s.data.timer < 0 and c.red or c.text, XXLSIZE, "center")
   local sy, sw = y + header + timerH, w / 3
   D.line(x + 4, sy, x + w - 5, sy)

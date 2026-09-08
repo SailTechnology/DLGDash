@@ -25,7 +25,7 @@ const output = path.resolve(root, '../../../output/DLGDash-v1.0/verification-' +
 fs.mkdirSync(output, { recursive: true });
 
 // Decode the same LVGL bitmap fonts used by EdgeTX v2.11.3 on PA01 (sml).
-const fontFamily = target?.firmwareMinor === 12 ? 'std212' : v12 ? 'v12' : v16 ? 'std' : '';
+const fontFamily = target?.fonts || (target?.firmwareMinor === 12 ? 'std212' : v12 ? 'v12' : v16 ? 'std' : '');
 const fonts = [null, ...['bold_STD', 'XXS', 'XS', 'L', 'bold_XL', 'bold_XXL'].map(name => firmwareFont('en_' + name, fontFamily))];
 const colors = [];
 const frames = [];
@@ -35,6 +35,7 @@ lualib.luaL_openlibs(L);
 lua.lua_pushnil(L); lua.lua_setglobal(L, to_luastring('_G'));
 lua.lua_pushstring(L, to_luastring(radio)); lua.lua_setglobal(L, to_luastring('__testRadio'));
 lua.lua_pushinteger(L, screenHeight); lua.lua_setglobal(L, to_luastring('__testHeight'));
+lua.lua_pushinteger(L, screenWidth); lua.lua_setglobal(L, to_luastring('__testWidth'));
 lua.lua_pushinteger(L, legacyV16 ? 10 : target?.firmwareMinor || 11); lua.lua_setglobal(L, to_luastring('__firmwareMinor'));
 function argString(i) { return to_jsstring(lua.lua_tolstring(L, i)); }
 function argNumber(i) {
@@ -179,17 +180,19 @@ expose('__altStatus', () => {
 });
 expose('__brand', () => {
   const fullscreen = lua.lua_toboolean(L, 1);
-  assert(commands.some(c => c.kind === 'text' && c.y < 24 && c.x > screenWidth - 70 && c.text === (fullscreen ? 'SET' : 'Sail')), 'Home author tag and fullscreen settings entry must stay separate');
+  assert(commands.some(c => c.kind === 'text' && c.y < (screenWidth >= 800 ? 40 : 24) && c.x > screenWidth - (screenWidth >= 800 ? 110 : 70) && c.text === (fullscreen ? 'SET' : 'Sail')), 'Home author tag and fullscreen settings entry must stay separate');
   return 0;
 });
 expose('__v16Layout', () => {
   const servos = argNumber(1), height = argNumber(2);
-  const bottom = height >= 260 ? 176 : 150;
-  const outputs = commands.filter(c => c.kind === 'text' && c.y >= bottom && c.x < 259 && /^[+-]\d+$/.test(c.text));
+  const large = screenWidth >= 800;
+  const bottom = large ? height >= 440 ? 292 : 250 : height >= 260 ? 176 : 150;
+  const left = Math.floor(screenWidth * 0.54);
+  const outputs = commands.filter(c => c.kind === 'text' && c.y >= bottom && c.x < left && /^[+-]\d+$/.test(c.text));
   assert.equal(outputs.length, servos);
-  const expected = (height - bottom) / (servos / 2) - 5 >= 29 ? 'en_L' : 'en_bold_STD';
+  const expected = (height - bottom) / (servos / 2) - 5 >= fonts[4].height ? 'en_L' : 'en_bold_STD';
   for (const value of outputs) assert.equal(value.font, expected, value.text + ': fixed V16 output font');
-  assert(commands.some(c => c.kind === 'line' && c.x2 - c.x1 >= 180 && c.x1 > 250 && c.y1 === c.y2), 'V16 uses its wider graph area');
+  assert(commands.some(c => c.kind === 'line' && c.x2 - c.x1 >= (large ? 300 : 180) && c.x1 > left && c.y1 === c.y2), 'Wide screens use their graph area');
   return 0;
 });
 expose('loadScript', () => {
@@ -208,4 +211,4 @@ if (lauxlib.luaL_loadbuffer(L, spec, spec.length, to_luastring('@' + specName)) 
 const files = [...new Set(frames)];
 console.log(`${radio.toUpperCase()}: ${files.length} real-font screenshots, zero text overlaps / out-of-screen draws.`);
 console.log(`Font heights: ${fonts.filter(Boolean).map(f => `${f.name}=${f.height}`).join(', ')}`);
-fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ screen: `${radio.toUpperCase()} ${screenWidth}x${screenHeight}`, fonts: fontFamily === 'std212' ? 'EdgeTX v2.12.0 std' : v12 ? 'EdgeTX 92c3224 sml' : 'EdgeTX v2.11.3 ' + (v16 ? 'std' : 'sml'), stringMetatable: false, screenshots: files, status: 'PASS' }, null, 2));
+fs.writeFileSync(path.join(output, 'result.json'), JSON.stringify({ screen: `${radio.toUpperCase()} ${screenWidth}x${screenHeight}`, fonts: fontFamily.endsWith('212') ? 'EdgeTX v2.12.0 ' + fontFamily.slice(0, -3) : v12 ? 'EdgeTX 92c3224 sml' : 'EdgeTX v2.11.3 ' + (v16 ? 'std' : 'sml'), stringMetatable: false, screenshots: files, status: 'PASS' }, null, 2));

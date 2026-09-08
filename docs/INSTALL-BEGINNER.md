@@ -2,7 +2,7 @@
 
 按顺序完成：**备份 → 复制文件 → 添加页面 → 设置本机参数 → 地面检查**。不需要改代码，也不需要先刷固件。
 
-按[完整机型表](RADIOS.md)选择 **DLGDash-Color-v1.0.1-beta.5.zip**（彩屏）或 **DLGDash-Monochrome-v1.0.1-beta.5.zip**（黑白屏）。也可直接阅读 [彩屏教程](INSTALL-COLOR.md)或[黑白屏教程](INSTALL-MONO.md)。本版扩展常见机型，保留绘图和黑白屏内存、保存修复，仍需真机地面验证。下图使用模拟数据。
+按[完整机型表](RADIOS.md)选择 **DLGDash-Color-v1.1.zip**（彩屏）或 **DLGDash-Monochrome-v1.1.zip**（黑白屏）。也可直接阅读 [彩屏教程](INSTALL-COLOR.md)或[黑白屏教程](INSTALL-MONO.md)。本版扩展常见机型，保留绘图和黑白屏内存、保存修复，仍需真机地面验证。下图使用模拟数据。
 
 ## 1. 先确定安装路线
 
@@ -18,7 +18,7 @@
 
 本教程适用于 EdgeTX。看到 OpenTX 或 Ethos 时先核对兼容性，不要直接套用。GX12 的内置存储按同样方式操作；V16 和 V12 不是同一机型。
 
-beta.5 增加 480×320 横屏和更多机型。不要用 beta.2 或其他旧包验证本次修复。其他未列出的黑白屏机型，请先提供 VERSION 页和报错照片，不必为了缺少 `table` 库直接刷固件。
+v1.1 增加 480×320 横屏和更多机型。不要用 beta.2 或其他旧包验证本次修复。其他未列出的黑白屏机型，请先提供 VERSION 页和报错照片，不必为了缺少 `table` 库直接刷固件。
 
 所有实验机型仍需真机地面检查，包括打开设置、保存后重启读取、遥测和提示音。不要把离线测试通过当作已通过飞行验证。
 
@@ -26,7 +26,7 @@ beta.5 增加 480×320 横屏和更多机型。不要用 beta.2 或其他旧包�
 
 1. 飞机放稳，接收机先断电。不要在电机可能启动或正在飞行时安装。
 2. 遥控器保证电量充足，准备一根能传数据的 USB 线。
-3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)，展开 **Assets**。彩屏选 **DLGDash-Color-v1.0.1-beta.5.zip**，黑白屏选 **DLGDash-Monochrome-v1.0.1-beta.5.zip**。不要选 Source code，也不要仅下载 SHA256SUMS.txt。
+3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)，展开 **Assets**。彩屏选 **DLGDash-Color-v1.1.zip**，黑白屏选 **DLGDash-Monochrome-v1.1.zip**。不要选 Source code，也不要仅下载 SHA256SUMS.txt。
 4. 右键 ZIP，选择“全部解压缩”。打开后应看到 **SD** 文件夹，里面有 WIDGETS 和 SCRIPTS。
 5. 遥控器正常开机，接 USB，选择 **USB Storage / USB 存储**。不要选择 Joystick / 游戏控制器。
 6. 在 Windows“此电脑”里打开新出现的内容盘。正确盘通常包含 **MODELS、RADIO、SCRIPTS、SOUNDS**。

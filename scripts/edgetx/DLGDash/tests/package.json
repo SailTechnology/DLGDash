@@ -1,6 +1,6 @@
 {
   "name": "dlg-dash-tests",
-  "version": "1.0.1-beta.5",
+  "version": "1.1.0",
   "private": true,
   "scripts": { "test": "node fetch-reference-fonts.cjs && node run-compat.cjs && node run.cjs && node run.cjs --v16 && node run.cjs --v16-210 && node run.cjs --v12 && node run-mono.cjs --x9d && node run-mono.cjs && node run-mono.cjs --zorro && node run-mono.cjs --zorro --legacy && node run-mono.cjs --t14", "test:radios": "node run-radios.cjs", "build:language": "node build-language.cjs" },
   "devDependencies": {

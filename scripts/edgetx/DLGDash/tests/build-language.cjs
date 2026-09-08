@@ -12,10 +12,11 @@ const monoOutput = path.resolve(output, '../mono');
 fs.mkdirSync(monoOutput, { recursive: true });
 const monoLines = [lines[0], 'return {'];
 let index = 0;
+const largeOnly = process.argv.includes('--large-only');
 for (const [key, text] of Object.entries(phrases)) {
   const name = 'l' + String(++index).padStart(3, '0');
   lines.push(`  [${JSON.stringify(key)}] = "${name}",`);
-  for (const size of [14, 17, 21]) {
+  for (const size of largeOnly ? [28, 34] : [14, 17, 21, 28, 34]) {
     const measure = createCanvas(1, 1).getContext('2d');
     let font, metrics;
     for (let pixels = size - 1; pixels >= 10; pixels--) {
@@ -36,6 +37,7 @@ for (const [key, text] of Object.entries(phrases)) {
     ctx.fillText(text, 1 + Math.max(0, metrics.actualBoundingBoxLeft), (size - glyphHeight) / 2 + metrics.actualBoundingBoxAscent);
     fs.writeFileSync(path.join(output, `${name}_${size}.png`), canvas.toBuffer('image/png'));
   }
+  if (largeOnly) continue;
   const measure = createCanvas(1, 1).getContext('2d');
   measure.font = '400 13px "DLG Chinese"';
   const metrics = measure.measureText(text), height = 14;
@@ -69,6 +71,8 @@ for (const [key, text] of Object.entries(phrases)) {
 }
 lines.push('}');
 monoLines.push('}');
-fs.writeFileSync(path.resolve(output, '../zh.lua'), lines.join('\n') + '\n');
-fs.writeFileSync(path.resolve(output, '../mono.lua'), monoLines.join('\n') + '\n');
-console.log(`Built ${index} Chinese labels in three sizes using Noto Sans SC.`);
+if (!largeOnly) {
+  fs.writeFileSync(path.resolve(output, '../zh.lua'), lines.join('\n') + '\n');
+  fs.writeFileSync(path.resolve(output, '../mono.lua'), monoLines.join('\n') + '\n');
+}
+console.log(`Built ${index} Chinese labels (${largeOnly ? 'large sizes only' : 'all sizes'}) using Noto Sans SC.`);

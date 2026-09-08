@@ -1,12 +1,12 @@
 # Zorro 安装与更新
 
-适用 **RadioMaster Zorro、128×64 黑白屏、EdgeTX**。本次为 **v1.0.1-beta.5**，包含进入设置时报 `attempt to index field '_G' (a nil value)` 的修复及旧固件兼容更新。此版本仍需真机地面验证，不要求先升级 EdgeTX 或 ELRS。
+适用 **RadioMaster Zorro、128×64 黑白屏、EdgeTX**。本次为 **v1.1**，包含进入设置时报 `attempt to index field '_G' (a nil value)` 的修复及旧固件兼容更新。此版本仍需真机地面验证，不要求先升级 EdgeTX 或 ELRS。
 
 ## 1. 下载黑白屏安装包
 
-打开 [v1.0.1-beta.5 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)，展开 **Assets**，只下载：
+打开 [v1.1 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)，展开 **Assets**，只下载：
 
-**DLGDash-Monochrome-v1.0.1-beta.5.zip**
+**DLGDash-Monochrome-v1.1.zip**
 
 不要下载 Source code。Zorro 与 X9D、GX12、T14 共用黑白屏包，旧版 Zorro 专用包用户也直接升级到此包；不要安装 Color 彩屏包。
 
@@ -106,7 +106,7 @@ H:/SCRIPTS/TELEMETRY/DLG.lua
 
 | 现象 | 检查方法 |
 | --- | --- |
-| 仍报 `_G` 或 `table` 为 nil | 先确认下载的是 beta.5，并按第 3、4 节使用新目录及处理两个入口的旧缓存 |
+| 仍报 `_G` 或 `table` 为 nil | 先确认下载的是 v1.1，并按第 3、4 节使用新目录及处理两个入口的旧缓存 |
 | 提示缺文件 | 重新完整解压专用包，核对第 4 节路径；不要只更新单个 Lua |
 | not enough memory | 这是运行内存不足；记录是在打开工具、进设置、翻页还是保存时发生，并提供完整报错 |
 | 无法保存 | 检查 profiles 是否存在、是否写保护、内容盘空间是否充足 |

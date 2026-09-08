@@ -1,11 +1,11 @@
 param(
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.0.1-beta.5'),
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.1'),
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName,
     [ValidateSet('Color', 'Monochrome', 'Universal', 'Zorro')][string]$Target = 'Color'
 )
 $ErrorActionPreference = 'Stop'
 if (-not $PackageName) {
-    $PackageName = "DLGDash-$Target-v1.0.1-beta.5.zip"
+    $PackageName = "DLGDash-$Target-v1.1.zip"
 }
 $monoOnly = $Target -in @('Monochrome', 'Zorro')
 $colorOnly = $Target -eq 'Color'

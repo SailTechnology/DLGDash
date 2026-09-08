@@ -1,4 +1,4 @@
--- DLGDash v1.0.1-beta.5 by Sail. Color-screen widget; read-only model/radio APIs.
+-- DLGDash v1.1.0 by Sail. Color-screen widget; read-only model/radio APIs.
 local ROOT = "/WIDGETS/DLGDash/"
 local P, C, D, Settings
 local function modules()
@@ -94,7 +94,8 @@ local function refresh(w, event, touch)
   -- draft for re-entry, but do not mute flight tones while settings are hidden.
   if fullscreen then
     local enter = EVT_VIRTUAL_ENTER ~= nil and event == EVT_VIRTUAL_ENTER
-    local tap = touch and touch.tapCount and touch.tapCount > 0 and touch.y < 25 and touch.x > zone.w - 72
+    local large = LCD_W >= 800 and LCD_H >= 480
+    local tap = touch and touch.tapCount and touch.tapCount > 0 and touch.y < (large and 40 or 25) and touch.x > zone.w - (large and 108 or 72)
     if enter or tap then openSettings(w); Settings.run(w.editor, 0, nil, zone.w, zone.h); return end
     if EVT_VIRTUAL_EXIT ~= nil and event == EVT_VIRTUAL_EXIT then lcd.exitFullScreen(); return end
   end
@@ -105,4 +106,4 @@ local function background(w)
   if w then w.editorVisible = false; sample(w) end
 end
 return { name = "DLGDash", options = options, create = create, update = update,
-  refresh = refresh, background = background, version = "1.0.1-beta.5" }
+  refresh = refresh, background = background, version = "1.1.0" }

@@ -31,7 +31,7 @@ foreach ($board in $radios.board) {
     foreach ($name in $forbidden) {
         if (Test-Path -LiteralPath (Join-Path $card "WIDGETS/DLGDash/$name")) { throw "Wrong-screen resource installed: $name" }
     }
-    if ($installed.Version -ne '1.0.1-beta.5' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
+    if ($installed.Version -ne '1.1.0' -or $installed.VerifiedUnchangedModelRadioFiles -ne 2 -or $installed.VerifiedUnchangedWidgetProfiles -ne 1) { throw 'Installation verification mismatch' }
     if (Test-Path -LiteralPath (Join-Path $card 'SCRIPTS/TELEMETRY/DLG.luac')) { throw 'Old cache survived' }
     if (-not (Test-Path -LiteralPath (Join-Path $backup.Backup 'SCRIPTS/TELEMETRY/DLG.luac'))) { throw 'Old cache is not recoverable' }
     $archivedHash = (Get-FileHash -LiteralPath (Join-Path $backup.Backup 'BACKUP/old.yml')).Hash

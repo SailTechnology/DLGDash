@@ -8,7 +8,7 @@ const radio = radioIndex >= 0 ? process.argv[radioIndex + 1] : process.argv.incl
 const target = require('../radios.json').find(r => r.board === radio && r.screen === 'Monochrome');
 assert(target, 'Unknown monochrome radio: ' + radio);
 const legacy = process.argv.includes('--legacy');
-const minor = legacy ? 7 : radio === 't14' ? 10 : 11;
+const minor = legacy ? 7 : target.firmwareMinor || (radio === 't14' ? 10 : 11);
 const width = target.width, height = target.height;
 const root = path.resolve(__dirname, '..');
 const sdIndex = process.argv.indexOf('--sd-root');

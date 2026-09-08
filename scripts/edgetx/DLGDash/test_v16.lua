@@ -3,7 +3,7 @@ SOURCE, BOOL, VALUE, PLAY_BACKGROUND, SOLID = 1, 2, 3, 4, 0
 STDSIZE, BOLD, TINSIZE, SMLSIZE, MIDSIZE, DBLSIZE, XXLSIZE = 0, 1, 2, 3, 4, 5, 6
 UNIT_VOLTS, UNIT_CELLS, UNIT_METERS, UNIT_FEET = 1, 15, 9, 10
 UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND = 5, 6
-LCD_W, LCD_H = 480, __testHeight or 272
+LCD_W, LCD_H = __testWidth or 480, __testHeight or 272
 EVT_VIRTUAL_NEXT, EVT_VIRTUAL_PREV, EVT_VIRTUAL_ENTER, EVT_VIRTUAL_EXIT = 10, 11, 12, 13
 EVT_VIRTUAL_INC, EVT_VIRTUAL_DEC = 10, 11
 EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE = 14, 15
@@ -89,7 +89,7 @@ eq(config.toneSource, "", "new V16 must not guess a sound switch")
 eq(config.resetSource, "", "new V16 must not guess a clear switch")
 eq(config.launchMode, 2)
 local api = loadScript("/WIDGETS/DLGDash/main.lua")()
-eq(api.options[1][3], 0); eq(api.version, "1.0.1-beta.5")
+eq(api.options[1][3], 0); eq(api.version, "1.1.0")
 eq(P.save(key, config), true)
 sim.radio = "pa01"; eq(P.load(P.identity()), nil, "radio profiles are independent"); sim.radio = testedRadio
 local function flight(servos, language)
@@ -106,22 +106,22 @@ for _, language in ipairs({ 0, 1 }) do
     for _, value in ipairs({ -150, -100, -99, 0, 99, 100, 150 }) do
       for ch = 1, servos do s.data.channels[ch] = value end
       __begin("v16-" .. language .. "-" .. servos .. "-" .. value)
-      D.dashboard(s, C, { w = 480, h = LCD_H }, false); __brand(false); __v16Layout(servos, LCD_H); __end()
+      D.dashboard(s, C, { w = LCD_W, h = LCD_H }, false); __brand(false); __v16Layout(servos, LCD_H); __end()
     end
-    for _, h in ipairs({ 232, 240, 252 }) do
+    for _, h in ipairs(LCD_W >= 800 and { 400, 420, 440 } or { 232, 240, 252 }) do
       __begin("v16-home-" .. language .. "-" .. servos .. "-" .. h)
-      D.dashboard(s, C, { w = 480, h = h }, false); __brand(false); __v16Layout(servos, h); __end()
+      D.dashboard(s, C, { w = LCD_W, h = h }, false); __brand(false); __v16Layout(servos, h); __end()
     end
     s.launchState, s.exitTick, s.config.delay = "delay", s.now, 10
-    __begin("v16-wait-" .. language .. "-" .. servos); D.dashboard(s, C, { w = 480, h = LCD_H }, true); __end()
+    __begin("v16-wait-" .. language .. "-" .. servos); D.dashboard(s, C, { w = LCD_W, h = LCD_H }, true); __end()
     sim.current = false; sim.clock = sim.clock + 5; C.update(s)
-    __begin("v16-lost-" .. language .. "-" .. servos); D.dashboard(s, C, { w = 480, h = LCD_H }, false); __altStatus(true); __end()
+    __begin("v16-lost-" .. language .. "-" .. servos); D.dashboard(s, C, { w = LCD_W, h = LCD_H }, false); __altStatus(true); __end()
     sim.current = true
   end
 end
 local s = flight(6, 1)
 s.data.timer, s.data.altitude, s.launchHeight = -3661, -1234.5, 1234.5
-__begin("v16-long-values"); D.dashboard(s, C, { w = 480, h = LCD_H }, false); __end()
+__begin("v16-long-values"); D.dashboard(s, C, { w = LCD_W, h = LCD_H }, false); __end()
 __begin("v16-small-zone"); D.dashboard(s, C, { w = 240, h = 140 }, false); __end()
 local saved, closed = false, false
 local editor = Settings.new(key, config, function() saved = true end, function() closed = true end)
@@ -129,33 +129,33 @@ for _, language in ipairs({ 0, 1 }) do
   editor.config.language = language
   for page, info in ipairs(editor.pages) do
     editor.page, editor.focus = page, 1
-    __begin("v16-settings-" .. language .. "-" .. page); Settings.run(editor, 0, nil, 480, LCD_H); __end()
+    __begin("v16-settings-" .. language .. "-" .. page); Settings.run(editor, 0, nil, LCD_W, LCD_H); __end()
     for row in ipairs(info.fields) do
-      editor.focus = row; Settings.run(editor, EVT_VIRTUAL_ENTER, nil, 480, LCD_H)
+      editor.focus = row; Settings.run(editor, EVT_VIRTUAL_ENTER, nil, LCD_W, LCD_H)
       assert(editor.picker)
       for _, pick in ipairs({ 1, #editor.picker.choices }) do
         editor.picker.index = pick
         __begin("v16-picker-" .. language .. "-" .. page .. "-" .. row .. "-" .. pick)
-        Settings.run(editor, 0, nil, 480, LCD_H); __end()
+        Settings.run(editor, 0, nil, LCD_W, LCD_H); __end()
       end
-      Settings.run(editor, EVT_VIRTUAL_EXIT, nil, 480, LCD_H)
+      Settings.run(editor, EVT_VIRTUAL_EXIT, nil, LCD_W, LCD_H)
     end
   end
 end
 editor.page, editor.focus = 8, 1
-Settings.run(editor, 0, { x = 100, y = 66, tapCount = 1 }, 480, LCD_H); assert(editor.picker)
-editor.picker.index = P.api.toneVolume and 3 or 2; Settings.run(editor, EVT_VIRTUAL_ENTER, nil, 480, LCD_H)
+Settings.run(editor, 0, { x = 100, y = LCD_W >= 800 and 96 or 66, tapCount = 1 }, LCD_W, LCD_H); assert(editor.picker)
+editor.picker.index = P.api.toneVolume and 3 or 2; Settings.run(editor, EVT_VIRTUAL_ENTER, nil, LCD_W, LCD_H)
 local chosenVolume = P.api.toneVolume and 1 or -1
 eq(editor.config.toneVolume, chosenVolume)
-Settings.run(editor, 0, { x = 300, y = LCD_H - 20, tapCount = 1 }, 480, LCD_H)
+Settings.run(editor, 0, { x = LCD_W * 0.625, y = LCD_H - 20, tapCount = 1 }, LCD_W, LCD_H)
 eq(saved, true); eq(P.load(key).toneVolume, chosenVolume)
-Settings.run(editor, 0, { x = 430, y = LCD_H - 20, tapCount = 1 }, 480, LCD_H); eq(closed, true)
+Settings.run(editor, 0, { x = LCD_W * 0.9, y = LCD_H - 20, tapCount = 1 }, LCD_W, LCD_H); eq(closed, true)
 local widget
-budget("cold create", function() widget = api.create({ w = 480, h = LCD_H }, { ToneSw = 0 }) end)
+budget("cold create", function() widget = api.create({ w = LCD_W, h = LCD_H }, { ToneSw = 0 }) end)
 widget.state = flight(6, 1); widget.state.config.toneSource = "SF"; widget.state.config.toneVolume = 5
 sim.switch = 1024
 budget("full graph Chinese", function() api.refresh(widget, 0, nil) end)
-budget("settings entry", function() api.refresh(widget, 0, { x = 460, y = 10, tapCount = 1 }) end)
+budget("settings entry", function() api.refresh(widget, 0, { x = LCD_W - 20, y = LCD_W >= 800 and 30 or 10, tapCount = 1 }) end)
 assert(widget.editor)
 widget.editor.focus = #widget.editor.pages[1].fields + 3
 budget("settings save", function() api.refresh(widget, EVT_VIRTUAL_ENTER, nil) end)
@@ -202,7 +202,7 @@ local long = P.defaults()
 for _, k in ipairs({ "voltage", "altitude", "vario", "toneSource", "resetSource" }) do long[k] = string.rep("X", 32) end
 P.save(key, long); P.save(key, long)
 local cold = loadScript("/WIDGETS/DLGDash/main.lua")()
-budget("cold create longest sources", function() widget = cold.create({ w = 480, h = LCD_H }, {}) end)
+budget("cold create longest sources", function() widget = cold.create({ w = LCD_W, h = LCD_H }, {}) end)
 budget("save longest sources", function() P.save(key, long) end)
 local tool = loadScript("/WIDGETS/DLGDash/DLGSetup.lua")()
 budget("standalone cold init", function() tool.init() end)

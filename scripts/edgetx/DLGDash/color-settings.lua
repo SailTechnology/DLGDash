@@ -27,8 +27,10 @@ function S.run(s, event, touch, w, h)
   local nextEvent = eventIs(event, EVT_VIRTUAL_NEXT) or eventIs(event, EVT_VIRTUAL_INC)
   local prevEvent = eventIs(event, EVT_VIRTUAL_PREV) or eventIs(event, EVT_VIRTUAL_DEC)
   local enter, exit = eventIs(event, EVT_VIRTUAL_ENTER), eventIs(event, EVT_VIRTUAL_EXIT)
-  local wide = w == 480 and h >= 272
+  local wide = w >= 480 and h >= 272
+  local large = w >= 800 and h >= 380
   local top, labelH, footerH = wide and 46 or 38, wide and 19 or 16, wide and 40 or 36
+  if large then top, labelH, footerH = 76, 32, 64 end
   local footer = h - footerH
   local rowH = math.floor((footer - top - 4) / 4)
   if s.picker then
@@ -73,10 +75,11 @@ function S.run(s, event, touch, w, h)
     return
   end
   D.fill(0, 0, w, h, c.bg)
-  local titleH = wide and 24 or 20
+  local titleH = large and 40 or wide and 24 or 20
   D.fill(0, 0, w, top - 2, c.band)
-  D.text(s.picker and s.picker.row.label or s.pages[s.page].title, 5, 0, w - 66, titleH, c.amber, BOLD)
-  D.text(s.dirty and "*" or s.page .. "/" .. #s.pages, w - 58, 0, 52, titleH, c.text, BOLD, "right")
+  local pageW = large and 96 or 58
+  D.text(s.picker and s.picker.row.label or s.pages[s.page].title, 5, 0, w - pageW - 8, titleH, c.amber, BOLD)
+  D.text(s.dirty and "*" or s.page .. "/" .. #s.pages, w - pageW, 0, pageW - 6, titleH, c.text, BOLD, "right")
   D.text(s.message or s.modelName or "DLG", 5, titleH, w - 10, top - titleH - 3, s.message and c.amber or c.muted, SMLSIZE)
   if s.picker then
     local p = s.picker

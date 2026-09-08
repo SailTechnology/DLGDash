@@ -1,10 +1,10 @@
 # 彩屏安装与更新
 
-适用 PA01、HelloRadio V16 / V12、TX16S（不含 MK3）/ TX15、PL18U、Jumper T15 / T16 / T18、FrSky X10 / X12S 等表内 EdgeTX 机型，完整型号和验证状态见 [机型表](RADIOS.md)。V12 的滚轮操作另见包内 [V12 教程](INSTALL-V12.md)。新增机型仍需实机地面验收，不要求先刷 EdgeTX 或 ELRS。
+适用 PA01、HelloRadio V16 / V15 / V12（含 CNC MAX）、RadioMaster TX16S（含 MK3）/ TX15 / GX15、Flysky PL18 / EV / U、Jumper T15 / Pro / T16 / T18、FrSky X10 / X12S 等表内 EdgeTX 机型，完整型号和验证状态见 [机型表](RADIOS.md)。V12 的滚轮操作另见包内 [V12 教程](INSTALL-V12.md)。新增机型仍需实机地面验收，不要求先刷 EdgeTX 或 ELRS。
 
 ## 1. 下载并备份
 
-1. 在 [beta.5 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.0.1-beta.5)的 Assets 下载 **DLGDash-Color-v1.0.1-beta.5.zip**，不要选 Monochrome 或 Source code。
+1. 在 [v1.1 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)的 Assets 下载 **DLGDash-Color-v1.1.zip**，不要选 Monochrome 或 Source code。
 2. 飞机断电，遥控器开机，拍下 SYS → VERSION 页。确认是 EdgeTX，不把 ELRS 版本当成系统版本。
 3. 用数据线接电脑，选 USB Storage / USB 存储。在电脑找到含 MODELS、RADIO、SCRIPTS 的内容盘，不向固件升级盘写入。
 4. 将内容盘完整复制到电脑一个带日期的新目录，检查模型及 WIDGETS/DLGDash/profiles 已备份。
