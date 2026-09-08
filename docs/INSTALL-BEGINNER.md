@@ -8,17 +8,17 @@
 
 | 遥控器 | 后面选择哪一步 |
 | --- | --- |
-| PA01、HelloRadio V16 | 第 5A 步：彩屏主屏 |
-| HelloRadio V12 | [V12 独立安装教程](INSTALL-V12.md)，使用彩屏包 |
+| PA01、HelloRadio V16 / V15 系列 | 第 5A 步：彩屏主屏 |
+| HelloRadio V12 / CNC MAX | [V12 独立安装教程](INSTALL-V12.md)，使用彩屏包 |
 | FrSky X9D 系列、RadioMaster GX12、Zorro、Jumper T14 | 第 5B 步：黑白遥测屏 |
-| TX16S（一代 / 二代）、TX15、PL18U、T15 / T16 / T18、X10 / X12S | 第 5A 步：彩屏主屏 |
+| TX16S（一代 / 二代 / MK3）、TX15、GX15、PL18 / EV / U、T15 / Pro / T16 / T18、X10 / X12S | 第 5A 步：彩屏主屏 |
 | Boxer、Pocket、TX12、V14、T12 / T20 / T-Pro / T-Lite、X7 / X9 Lite / X-Lite / X9E | 第 5B 步：黑白遥测屏 |
 
 打开遥控器 **SYS → VERSION / 版本**，记下 EdgeTX 版本。ELRS 3.3.1 等是射频版本，不是这里需要的系统版本。
 
 本教程适用于 EdgeTX。看到 OpenTX 或 Ethos 时先核对兼容性，不要直接套用。GX12 的内置存储按同样方式操作；V16 和 V12 不是同一机型。
 
-v1.1 增加 480×320 横屏和更多机型。不要用 beta.2 或其他旧包验证本次修复。其他未列出的黑白屏机型，请先提供 VERSION 页和报错照片，不必为了缺少 `table` 库直接刷固件。
+v1.1 纳入更多机型，彩屏覆盖 320×240、480×272、480×320 和 800×480 横屏。不要用 beta.2 或其他旧包验证本次修复。其他未列出的黑白屏机型，请先提供 VERSION 页和报错照片，不必为了缺少 `table` 库直接刷固件。
 
 所有实验机型仍需真机地面检查，包括打开设置、保存后重启读取、遥测和提示音。不要把离线测试通过当作已通过飞行验证。
 
@@ -26,7 +26,7 @@ v1.1 增加 480×320 横屏和更多机型。不要用 beta.2 或其他旧包验
 
 1. 飞机放稳，接收机先断电。不要在电机可能启动或正在飞行时安装。
 2. 遥控器保证电量充足，准备一根能传数据的 USB 线。
-3. 打开 [兼容测试版下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)，展开 **Assets**。彩屏选 **DLGDash-Color-v1.1.zip**，黑白屏选 **DLGDash-Monochrome-v1.1.zip**。不要选 Source code，也不要仅下载 SHA256SUMS.txt。
+3. 打开 [v1.1 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)，展开 **Assets**。彩屏选 **DLGDash-Color-v1.1.zip**，黑白屏选 **DLGDash-Monochrome-v1.1.zip**。不要选 Source code，也不要仅下载 SHA256SUMS.txt。
 4. 右键 ZIP，选择“全部解压缩”。打开后应看到 **SD** 文件夹，里面有 WIDGETS 和 SCRIPTS。
 5. 遥控器正常开机，接 USB，选择 **USB Storage / USB 存储**。不要选择 Joystick / 游戏控制器。
 6. 在 Windows“此电脑”里打开新出现的内容盘。正确盘通常包含 **MODELS、RADIO、SCRIPTS、SOUNDS**。
@@ -63,7 +63,7 @@ H:/WIDGETS/DLGDash/             完整文件夹，含 lang 等内容
 H:/WIDGETS/DLGDash/profiles/    空文件夹或自己的设置
 H:/WIDGETS/DLGDash/diagnostics/ 空文件夹或自己的记录
 H:/SCRIPTS/TOOLS/DLGSetup.lua
-H:/SCRIPTS/TELEMETRY/DLG.lua
+H:/SCRIPTS/TELEMETRY/DLG.lua   仅黑白屏包，彩屏不需要
 ```
 
 这几种位置是错的：
