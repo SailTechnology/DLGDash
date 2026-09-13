@@ -111,9 +111,12 @@ local function updateLaunch(s, mode, altitude)
   if s.launchState == "delay" and C.elapsed(s.now, s.exitTick) >= cfg.delay * 10 then
     -- Include the exit sample even for a zero-delay peak settlement.
     if altitude then s.peak = math.max(s.peak or altitude, altitude) end
-    if cfg.settle == 1 then s.launchHeight = altitude and s.peakComplete and s.peak or nil
+    if cfg.settle == 1 then s.launchHeight = s.peak
     else s.launchHeight = altitude end
-    s.launchState = s.launchHeight and "settled" or "lost"
+    s.launchState = s.launchHeight and (s.peakComplete and "settled" or "partial") or "waiting"
+  elseif s.launchState == "waiting" and altitude then
+    -- First valid value after the window is a late reading, never an exact peak.
+    s.launchHeight, s.launchState = altitude, "late"
   end
   s.modeActive = active
   s.modeObserved = true
@@ -220,8 +223,8 @@ function C.update(s)
     s.previousPressed, s.graphAltitude, s.smoothTick = nil, nil, nil
     s.graphGap = true
     s.modeObserved = false
-    -- Do not settle an exit that could have happened while scripts were suspended.
-    if s.modeActive or s.launchState == "delay" then s.modeActive = false; s.launchState = "lost"; s.launchHeight = nil end
+    -- Retain observed samples across pauses, but mark the result incomplete.
+    if s.modeActive or s.launchState == "delay" then s.peakComplete = false end
   end
   if C.elapsed(now, s.resolveTick) >= 200 then
     for _, key in ipairs({ "altitude", "voltage", "vario", "toneSource", "resetSource" }) do s.ids[key] = s.profile.field(s.config[key]) end

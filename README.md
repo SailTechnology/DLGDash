@@ -4,6 +4,8 @@ DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、�
 
 [从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 安装教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载 v1.1](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)
 
+高度经常出现 `NO FIX` 的用户，可下载 [v1.1.1-test.1 高度结算修复测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1.1-test.1)。该版保留有效峰值，无数据时等待回传，并标明缺测或延后读数。想取 Zoom 内和退出后一段时间的最高值，请在第 3 页选择 **Zoom → 退出后延迟（例如 2.0 秒）→ 阶段峰值**，然后保存；延迟为 0 秒时，退出 Zoom 就结算。
+
 **按屏幕选择一个包，不叠加安装：**
 
 | 屏幕 | 机型 | 下载 |

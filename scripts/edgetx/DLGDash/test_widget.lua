@@ -171,12 +171,42 @@ s = state({ delay = 10 }); step(s); sim.mode = 2; sim.altitude = 20; step(s); si
 step(s, 40); sim.mode = 2; sim.altitude = 30; step(s); step(s, 100); eq(s.launchState, "tracking")
 sim.mode = 3; sim.altitude = 48; step(s); step(s, 100); near(s.launchHeight, 48, "re-entry must rearm delay")
 s = state({ delay = 5 }); step(s); sim.mode = 2; step(s); sim.mode = 3; step(s); sim.link = false; step(s, 50)
-eq(s.launchState, "lost"); sim.link = true; sim.altitude = 200; step(s); eq(s.launchHeight, nil, "no late fix after telemetry loss")
+eq(s.launchState, "waiting"); sim.link = true; sim.altitude = 200; step(s)
+near(s.launchHeight, 200); eq(s.launchState, "late", "recovered value is explicitly late")
+sim.altitude = 300; step(s); near(s.launchHeight, 200, "late result freezes after recovery")
 s = state({ launchMode = 3 }); step(s); sim.mode = 2; step(s); sim.mode = 0; step(s); eq(s.launchHeight, nil)
 sim.mode = 3; step(s); sim.mode = 0; sim.altitude = 12; step(s); near(s.launchHeight, 12)
 s = state({ settle = 1 }); step(s); sim.mode = 2; sim.altitude = 40; step(s)
 sim.link = false; step(s); sim.link = true; sim.mode = 3; sim.altitude = 30; step(s)
-eq(s.launchState, "lost", "a partially observed peak must not be reported as complete")
+eq(s.launchState, "partial", "retain observed peak and mark missing coverage")
+near(s.launchHeight, 40)
+-- A missing exit packet must not discard an already observed peak.
+s = state({ settle = 1 }); step(s); sim.mode = 2; sim.altitude = 52; step(s)
+sim.current.altitude = false; sim.mode = 3; step(s)
+eq(s.launchState, "partial"); near(s.launchHeight, 52)
+sim.current.altitude = true; sim.altitude = 70; step(s)
+near(s.launchHeight, 52, "later thermals must not enlarge the launch window peak")
+-- No launch samples: wait across long outages, then accept one labelled late fix.
+s = state({ settle = 1 }); step(s); sim.current.altitude = false
+sim.mode = 2; step(s); sim.mode = 3; step(s)
+eq(s.launchState, "waiting"); eq(s.launchHeight, nil)
+step(s, 3000); eq(s.launchState, "waiting"); eq(s.launchHeight, nil)
+sim.clock = sim.clock + 3000; C.update(s); eq(s.launchState, "waiting", "wait survives script suspension")
+sim.current.altitude = true; sim.altitude = 0; step(s)
+eq(s.launchState, "late"); near(s.launchHeight, 0, "zero is a valid recovered altitude")
+-- A new throw supersedes any pending result; negative heights remain valid.
+s = state({ settle = 1 }); step(s); sim.current.altitude = false
+sim.mode = 2; step(s); sim.mode = 3; step(s); eq(s.launchState, "waiting")
+sim.mode = 2; sim.current.altitude = true; sim.altitude = -2; step(s)
+eq(s.launchState, "tracking"); eq(s.launchHeight, nil)
+sim.mode = 3; sim.altitude = -3; step(s); near(s.launchHeight, -2); eq(s.launchState, "settled")
+-- A script pause cannot erase known samples or claim complete launch coverage.
+s = state({ settle = 1 }); step(s); sim.mode = 2; sim.altitude = 45; step(s)
+sim.mode = 3; sim.altitude = 30; sim.clock = sim.clock + 200; C.update(s)
+near(s.launchHeight, 45); eq(s.launchState, "partial")
+-- Loss of the launch mode observation at startup is also labelled incomplete.
+s = state({ settle = 1 }); sim.mode = 2; sim.altitude = 10; step(s)
+sim.mode = 3; sim.altitude = 5; step(s); near(s.launchHeight, 10); eq(s.launchState, "partial")
 
 -- Six mapped FINAL outputs, including disabled channels and imperial telemetry.
 s = state({ servos = 6, ch1 = 6, ch6 = 1, ch3 = 0 }); step(s)
@@ -513,6 +543,15 @@ for _, servos in ipairs({ 4, 6 }) do
 end
 
 -- Full widget/tool integration: stale native options must not overwrite saved settings.
+for _, language in ipairs({ 0, 1 }) do
+  s = state({ language = language }); step(s)
+  for _, status in ipairs({ "waiting", "partial", "late" }) do
+    s.launchState = status
+    s.launchHeight = status ~= "waiting" and 52.7 or nil
+    __begin("launch-recovery-" .. language .. "-" .. status)
+    D.dashboard(s, C, { w = 320, h = 240 }, false); __end()
+  end
+end
 reset()
 local api = loadScript("/WIDGETS/DLGDash/main.lua")()
 eq(#api.options, 4)

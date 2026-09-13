@@ -121,6 +121,12 @@ for _, value in ipairs({ -3661, 359999, -359999 }) do
   sim.timer, sim.altitude = value, -12345.6; tick()
   __begin("extreme-" .. value); D.dashboard(s, C, 1); __end()
 end
+for _, status in ipairs({ "waiting", "partial", "late" }) do
+  s.launchState = status
+  s.launchHeight = status ~= "waiting" and 52.7 or nil
+  __begin("launch-recovery-" .. status); D.dashboard(s, C, 1); __end()
+end
+s.launchState = "idle"
 sim.current = false; tick(); __begin("lost"); D.dashboard(s, C, 1); __end(); eq(s.data.altitude, nil)
 sim.current, sim.altitude, sim.timer = true, 23.4, 128
 cfg.resetSource, cfg.toneSource = "SE", "SF"; tick(200)

@@ -89,7 +89,7 @@ eq(config.toneSource, "", "new V16 must not guess a sound switch")
 eq(config.resetSource, "", "new V16 must not guess a clear switch")
 eq(config.launchMode, 2)
 local api = loadScript("/WIDGETS/DLGDash/main.lua")()
-eq(api.options[1][3], 0); eq(api.version, "1.1.0")
+eq(api.options[1][3], 0); eq(api.version, "1.1.1-test.1")
 eq(P.save(key, config), true)
 sim.radio = "pa01"; eq(P.load(P.identity()), nil, "radio profiles are independent"); sim.radio = testedRadio
 local function flight(servos, language)
@@ -120,6 +120,12 @@ for _, language in ipairs({ 0, 1 }) do
   end
 end
 local s = flight(6, 1)
+for _, status in ipairs({ "waiting", "partial", "late" }) do
+  s.launchState = status
+  s.launchHeight = status ~= "waiting" and 52.7 or nil
+  __begin("launch-recovery-" .. status); D.dashboard(s, C, { w = LCD_W, h = LCD_H }, false); __end()
+end
+s.launchState = "settled"
 s.data.timer, s.data.altitude, s.launchHeight = -3661, -1234.5, 1234.5
 __begin("v16-long-values"); D.dashboard(s, C, { w = LCD_W, h = LCD_H }, false); __end()
 __begin("v16-small-zone"); D.dashboard(s, C, { w = 240, h = 140 }, false); __end()

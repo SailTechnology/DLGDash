@@ -40,11 +40,11 @@ function D.text(text, x, y, w, h, color, maxFont, align)
 end
 
 local function height(value) return value and string.format("%.1f", value) or "--.-" end
-local function metric(x, y, w, h, label, value, color)
+local function metric(x, y, w, h, label, value, color, mark)
   local labelH = large and 30 or wide and 18 or 16
   D.text(label, x + 4, y, w - 8, labelH, c.muted, SMLSIZE, "center")
   local unitW, unitH = large and 28 or 16, large and 36 or 25
-  D.text(height(value), x + 3, y + labelH + 1, w - unitW - 5, h - labelH - 2, color, DBLSIZE, "right")
+  D.text((mark or "") .. height(value), x + 3, y + labelH + 1, w - unitW - 5, h - labelH - 2, color, DBLSIZE, "right")
   D.text("m", x + w - unitW, y + h - unitH, unitW - 3, unitH - 3, color, BOLD)
 end
 local function battery(s, x, y, w, h)
@@ -142,9 +142,10 @@ function D.dashboard(s, core, zone, fullscreen)
   local label = "LAUNCH"
   if s.launchState == "tracking" then label = "IN MODE"
   elseif s.launchState == "delay" then label = string.format("WAIT %.1fs", math.max(0, s.config.delay / 10 - core.elapsed(s.now, s.exitTick) / 100))
-  elseif s.launchState == "lost" then label = "NO FIX"
+  elseif s.launchState == "waiting" then label = "WAIT"
   elseif s.config.launchMode < 0 then label = "SET MODE" end
-  metric(x + sw, sy + 1, sw, statsH - 2, label, s.launchHeight, c.amber)
+  local mark = s.launchState == "partial" and "~" or s.launchState == "late" and ">" or nil
+  metric(x + sw, sy + 1, sw, statsH - 2, label, s.launchHeight, c.amber, mark)
   metric(x + sw * 2, sy + 1, sw, statsH - 2, "ALTITUDE", s.data.altitude, c.cyan)
   for i = 1, 2 do D.line(x + sw * i, sy + 4, x + sw * i, sy + statsH - 4) end
   local by, bh, left = sy + statsH, h - header - timerH - statsH, math.floor(w * 0.54)

@@ -79,7 +79,8 @@ function D.dashboard(s, C, page)
   D.text(number(b.voltage) .. "V/" .. number(b.full) .. "V", 0, 29, w, false, false)
   if not narrow then D.text(b.label or "NO DATA", 124, 29, w - 124, false, false) end
   D.text("A " .. number(s.data.altitude), 0, 40, split - 1, false, false)
-  local launch = s.launchState == "delay" and "WAIT" or number(s.launchHeight)
+  local mark = s.launchState == "partial" and "~" or s.launchState == "late" and ">" or ""
+  local launch = (s.launchState == "delay" or s.launchState == "waiting") and "WAIT" or mark .. number(s.launchHeight)
   D.text("L " .. launch, 0, 49, split - 1, false, false)
   D.text(number(s.data.vario) .. "m/s", 0, 57, split - 1, false, false)
   graph(s, C, split, 40, w - split, 24)
