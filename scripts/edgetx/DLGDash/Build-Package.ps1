@@ -1,11 +1,11 @@
 param(
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.1.1-test.1'),
+    [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\..\..\output\DLGDash-v1.1.1'),
     [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9._-]*\.zip$')][string]$PackageName,
     [ValidateSet('Color', 'Monochrome', 'Universal', 'Zorro')][string]$Target = 'Color'
 )
 $ErrorActionPreference = 'Stop'
 if (-not $PackageName) {
-    $PackageName = "DLGDash-$Target-v1.1.1-test.1.zip"
+    $PackageName = "DLGDash-$Target-v1.1.1.zip"
 }
 $monoOnly = $Target -in @('Monochrome', 'Zorro')
 $colorOnly = $Target -eq 'Color'
@@ -39,13 +39,13 @@ New-Item -ItemType Directory -Path (Join-Path $widget 'profiles'), (Join-Path $w
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\..\..\THIRD_PARTY_NOTICES.md') -Destination $sd
 $docs = Join-Path $PSScriptRoot '..\..\..\docs'
 Copy-Item -LiteralPath (Join-Path $docs 'RADIOS.md') -Destination $sd
-Copy-Item -LiteralPath (Join-Path $docs 'RELEASE-v1.1.1-test.1.md') -Destination (Join-Path $sd 'UPDATE.md')
+Copy-Item -LiteralPath (Join-Path $docs 'RELEASE-v1.1.1.md') -Destination (Join-Path $sd 'UPDATE.md')
 if ($monoOnly) {
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-MONO.md') -Destination (Join-Path $sd 'README.md')
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-MONO.md') -Destination $sd
     Copy-Item -LiteralPath (Join-Path $docs 'INSTALL-ZORRO.md') -Destination $sd
     New-Item -ItemType Directory -Path (Join-Path $sd 'images') | Out-Null
-    foreach ($file in Get-ChildItem -LiteralPath (Join-Path $docs 'images') -File | Where-Object { $_.Name -match '^(x9d|gx12|zorro|t14).*large\.png$' }) {
+    foreach ($file in Get-ChildItem -LiteralPath (Join-Path $docs 'images') -File | Where-Object { $_.Name -match '^(x9d|gx12|zorro|t14).*(large|menu)\.png$' }) {
         Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $sd 'images')
     }
 } elseif ($colorOnly) {

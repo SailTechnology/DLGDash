@@ -1,5 +1,10 @@
 -- Reuse the color settings controller and choices; only navigation/layout differ.
 local S, D, H = ...
+-- Invert after drawing so native text and Chinese pixmaps share one focus bar.
+local function highlight(x, y, w, h)
+  if lcd.drawFilledRectangle then lcd.drawFilledRectangle(x, y, w, h, 0)
+  else lcd.drawRectangle(x, y, w, h) end
+end
 function S.run(s, event)
   local function is(code) return H.eventIs(event, code) end
   local next = is(EVT_VIRTUAL_NEXT) or is(EVT_VIRTUAL_INC)
@@ -34,6 +39,7 @@ function S.run(s, event)
       if p.choices[index] then
         if index == p.index then D.text(">", 0, 17 + row * 16, 6, false, false) end
         D.text(p.choices[index].label, 7, 17 + row * 16, LCD_W - 8)
+        if index == p.index then highlight(0, 16 + row * 16, LCD_W, 16) end
       end
     end
   elseif page.diagnostic then
@@ -46,9 +52,13 @@ function S.run(s, event)
     local index = math.min(s.focus, #fields)
     local row = fields[index]
     if row then
-      D.text(row.label, 1, 17, LCD_W - 30)
+      D.text(row.label, 9, 17, LCD_W - 38)
       D.text(s.message or H.rowLabel(s, row), 1, 33, LCD_W - 2)
-      if s.focus <= #fields then D.text(index .. "/" .. #fields, LCD_W - 24, 17, 24, false, false) end
+      if s.focus <= #fields then
+        D.text(">", 0, 17, 6, false, false)
+        D.text(index .. "/" .. #fields, LCD_W - 24, 17, 24, false, false)
+        highlight(0, 16, LCD_W, 16)
+      end
     end
     if s.page == 1 and row and row.key == "voltage" and not s.message then
       local f = H.field(s.config.voltage)
@@ -60,8 +70,8 @@ function S.run(s, event)
   for i, label in ipairs(labels) do
     local width = math.floor(LCD_W / 4)
     local x = (i - 1) * width
-    if not s.picker and s.focus == #fields + i then lcd.drawLine(x, 49, x + width - 2, 49, SOLID, 0) end
     D.text(label, x + 1, 50, width - 2)
+    if not s.picker and s.focus == #fields + i then highlight(x, 49, width - 1, 15) end
   end
 end
 return S

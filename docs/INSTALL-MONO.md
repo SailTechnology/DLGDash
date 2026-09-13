@@ -4,7 +4,7 @@
 
 ## 1. 下载与备份
 
-1. 在 [v1.1 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)展开 Assets，下载 **DLGDash-Monochrome-v1.1.zip**。所有上述黑白屏机型使用同一个包，不下载 Color 包或 Source code。
+1. 在 [v1.1.1 发布页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1.1)展开 Assets，下载 **DLGDash-Monochrome-v1.1.1.zip**。所有上述黑白屏机型使用同一个包，不下载 Color 包或 Source code。
 2. 断开飞机电池，遥控器开机，拍下 SYS → VERSION 页，记录 EdgeTX 系统版本，不是 ELRS 版本。
 3. 用数据线连接电脑，选择 USB Storage / USB 存储，不选 USB 摇杆。
 4. 找到包含 MODELS、RADIO、SCRIPTS 的内容盘。内置存储同样操作；若提示格式化，取消，不向固件升级盘复制插件。

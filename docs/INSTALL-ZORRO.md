@@ -4,9 +4,9 @@
 
 ## 1. 下载黑白屏安装包
 
-打开 [v1.1 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)，展开 **Assets**，只下载：
+打开 [v1.1.1 下载页](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1.1)，展开 **Assets**，只下载：
 
-**DLGDash-Monochrome-v1.1.zip**
+**DLGDash-Monochrome-v1.1.1.zip**
 
 不要下载 Source code。Zorro 与 X9D、GX12、T14 共用黑白屏包，旧版 Zorro 专用包用户也直接升级到此包；不要安装 Color 彩屏包。
 

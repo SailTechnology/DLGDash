@@ -89,7 +89,7 @@ eq(config.toneSource, "", "new V16 must not guess a sound switch")
 eq(config.resetSource, "", "new V16 must not guess a clear switch")
 eq(config.launchMode, 2)
 local api = loadScript("/WIDGETS/DLGDash/main.lua")()
-eq(api.options[1][3], 0); eq(api.version, "1.1.1-test.1")
+eq(api.options[1][3], 0); eq(api.version, "1.1.1")
 eq(P.save(key, config), true)
 sim.radio = "pa01"; eq(P.load(P.identity()), nil, "radio profiles are independent"); sim.radio = testedRadio
 local function flight(servos, language)
@@ -133,6 +133,11 @@ local saved, closed = false, false
 local editor = Settings.new(key, config, function() saved = true end, function() closed = true end)
 for _, language in ipairs({ 0, 1 }) do
   editor.config.language = language
+  editor.page = 1
+  for focus = 1, #editor.pages[1].fields + 4 do
+    editor.focus = focus
+    __begin("focus-" .. language .. "-" .. focus); Settings.run(editor, 0, nil, LCD_W, LCD_H); __end()
+  end
   for page, info in ipairs(editor.pages) do
     editor.page, editor.focus = page, 1
     __begin("v16-settings-" .. language .. "-" .. page); Settings.run(editor, 0, nil, LCD_W, LCD_H); __end()

@@ -13,7 +13,8 @@ _G = nil
 table = nil
 local sim = { clock = 0, filename = "demo.yml", current = true, fresh = true, altitude = 12.3,
   voltage = 8.1, speed = 1.2, mode = 0, timer = 128, switch = -1024, output = 0, tones = 0 }
-lcd = { clear = __clear, drawText = __text, drawLine = __line, drawRectangle = __rect, drawPixmap = __pixmap }
+lcd = { clear = __clear, drawText = __text, drawLine = __line, drawRectangle = __rect,
+  drawFilledRectangle = __fill or __rect, drawPixmap = __pixmap }
 local sensors = {
   { id = 301, name = "RxBt", unit = UNIT_VOLTS, key = "voltage" },
   { id = 304, name = "Alt", unit = UNIT_METERS, key = "altitude" },
@@ -163,6 +164,11 @@ Settings.run(e, EVT_VIRTUAL_PREV); eq(e.focus, 1)
 EVT_VIRTUAL_INC, EVT_VIRTUAL_DEC, EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE = inc, dec, nextPage, prevPage
 for _, lang in ipairs({ 0, 1 }) do
   e.config.language = lang
+  e.page = 1
+  for focus = 1, #e.pages[1].fields + 4 do
+    e.focus = focus
+    __begin("focus-" .. lang .. "-" .. focus); Settings.run(e, 0); __end()
+  end
   for page, info in ipairs(e.pages) do
     e.page, e.focus = page, 1
     __begin("settings-" .. lang .. "-" .. page); Settings.run(e, 0); __end()
@@ -178,6 +184,11 @@ for _, lang in ipairs({ 0, 1 }) do
     end
   end
 end
+local fill = lcd.drawFilledRectangle
+lcd.drawFilledRectangle = nil
+e.page, e.focus = 1, 1
+__begin("focus-outline-fallback"); Settings.run(e, 0); __end()
+lcd.drawFilledRectangle = fill
 e.page, e.focus, e.message = 9, 1, nil
 e.config.language = 0
 Settings.run(e, EVT_VIRTUAL_ENTER); e.picker.index = 2; Settings.run(e, EVT_VIRTUAL_ENTER)

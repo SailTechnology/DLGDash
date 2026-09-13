@@ -17,7 +17,7 @@
 | Jumper T16、T18 系列 | 480×272 | 彩屏主屏添加 DLGDash |
 | FrSky Horus X10 / X10S、Express 系列、X12S | 480×272 | 必须运行 EdgeTX，不适用于 Ethos / FrOS |
 
-使用 [Color 安装教程](https://github.com/SailTechnology/DLGDash/blob/v1.1/docs/INSTALL-COLOR.md)。优先选择 1×1 布局，关闭不需要的显示栏，不要求 App Mode。非触摸机型使用按键和滚轮；设置可以从 SYS → 工具 → DLG Setup 打开。
+使用 [Color 安装教程](https://github.com/SailTechnology/DLGDash/blob/v1.1.1/docs/INSTALL-COLOR.md)。优先选择 1×1 布局，关闭不需要的显示栏，不要求 App Mode。非触摸机型使用按键和滚轮；设置可以从 SYS → 工具 → DLG Setup 打开。
 
 ## 黑白屏
 
@@ -29,7 +29,7 @@
 | FrSky Q X7 / Q X7 Access、X9 Lite / S、X-Lite / S / Pro | 128×64 |
 | FrSky X9D / Plus / Plus 2019、X9E | 212×64 |
 
-使用 [Monochrome 安装教程](https://github.com/SailTechnology/DLGDash/blob/v1.1/docs/INSTALL-MONO.md)。在当前模型 Display 页面选择 Script → DLG，不是在彩屏控件菜单寻找插件。
+使用 [Monochrome 安装教程](https://github.com/SailTechnology/DLGDash/blob/v1.1.1/docs/INSTALL-MONO.md)。在当前模型 Display 页面选择 Script → DLG，不是在彩屏控件菜单寻找插件。
 
 滚轮机型：转动切换选项，按下确认，RTN / EXIT 返回。方向键机型：用上一项 / 下一项键移动，ENTER 确认；菜单翻页使用固件对应的 PAGE 键。按键名称不同，以当前 EdgeTX 的导航键为准。不要为了套教程改模型的开关绑定。
 
@@ -37,7 +37,7 @@
 
 ## 验证状态
 
-- PA01：已有使用反馈，更新后仍需检查。
+- PA01：v1.1.1 菜单实机使用反馈正常；此反馈不等于其他机型或飞行场景均已验证。
 - T14：2026-09-08 用户反馈 beta.4 基本正常；这不是飞行安全认证，也不代表其他机型已经实测。
 - V16：有早期报错及修复记录，仍需确认新版 SYS / 主屏两个入口。
 - 其余表内机型：实验适配，通过对应屏幕和机型标识的离线回归后仍须实机地面检查。模拟按键事件不等同于每台真机按键已经验证。

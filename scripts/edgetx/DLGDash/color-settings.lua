@@ -33,6 +33,8 @@ function S.run(s, event, touch, w, h)
   if large then top, labelH, footerH = 76, 32, 64 end
   local footer = h - footerH
   local rowH = math.floor((footer - top - 4) / 4)
+  local markerW = large and 32 or wide and 24 or 16
+  local textX = 7 + markerW
   if s.picker then
     local p = s.picker
     if nextEvent then p.index = math.min(#p.choices, p.index + 1) end
@@ -87,16 +89,24 @@ function S.run(s, event, touch, w, h)
     for row = 0, 3 do
       local i = start + row
       if p.choices[i] then
-        if i == p.index then D.fill(2, top + row * rowH, w - 4, rowH - 1, c.band) end
-        D.text(p.choices[i].label, 8, top + row * rowH, w - 16, rowH - 2, i == p.index and c.cyan or c.text, BOLD)
+        local selected, ry = i == p.index, top + row * rowH
+        if selected then
+          D.fill(2, ry, w - 4, rowH - 1, c.text)
+          D.text(">", 7, ry, markerW - 3, rowH - 2, c.bg, BOLD)
+        end
+        D.text(p.choices[i].label, textX, ry, w - textX - 7, rowH - 2, selected and c.bg or c.text, BOLD)
       end
     end
   else
     for i, row in ipairs(fields) do
       local ry = top + (i - 1) * rowH
-      if s.focus == i then D.fill(2, ry, w - 4, rowH - 1, c.band) end
-      D.text(row.label, 7, ry, w - 14, labelH, c.muted, SMLSIZE)
-      D.text(rowLabel(s, row), 7, ry + labelH, w - 14, rowH - labelH - 1, c.text, BOLD)
+      local selected = s.focus == i
+      if selected then
+        D.fill(2, ry, w - 4, rowH - 1, c.text)
+        D.text(">", 7, ry, markerW - 3, rowH - 2, c.bg, BOLD)
+      end
+      D.text(row.label, textX, ry, w - textX - 7, labelH, selected and c.bg or c.muted, SMLSIZE)
+      D.text(rowLabel(s, row), textX, ry + labelH, w - textX - 7, rowH - labelH - 1, selected and c.bg or c.text, BOLD)
     end
     if s.pages[s.page].diagnostic then drawDiagnostics(s, w, top, rowH, labelH)
     elseif s.page == 1 then
@@ -110,8 +120,8 @@ function S.run(s, event, touch, w, h)
   for i, label in ipairs(labels) do
     local bx = (i - 1) * w / 4
     local focused = not s.picker and s.focus == #fields + i
-    D.fill(bx + 1, footer, w / 4 - 2, footerH - 1, focused and c.line or c.band)
-    D.text(label, bx + 3, footer, w / 4 - 6, footerH - 1, i == 3 and c.green or c.text, BOLD, "center")
+    D.fill(bx + 1, footer, w / 4 - 2, footerH - 1, focused and c.text or c.band)
+    D.text(label, bx + 3, footer, w / 4 - 6, footerH - 1, focused and c.bg or i == 3 and c.green or c.text, BOLD, "center")
   end
 end
 return S

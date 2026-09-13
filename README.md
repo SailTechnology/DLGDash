@@ -2,34 +2,34 @@
 
 DLG / F3K 飞行仪表：大计时器、电压、发射高度、当前高度、四/六路舵量、历史曲线和升降提示音。
 
-[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 安装教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载 v1.1](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)
+[从零安装](docs/INSTALL-BEGINNER.md) · [Zorro 安装教程](docs/INSTALL-ZORRO.md) · [设置说明](scripts/edgetx/DLGDash/README.md) · [下载 v1.1.1](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1.1)
 
-高度经常出现 `NO FIX` 的用户，可下载 [v1.1.1-test.1 高度结算修复测试版](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1.1-test.1)。该版保留有效峰值，无数据时等待回传，并标明缺测或延后读数。想取 Zoom 内和退出后一段时间的最高值，请在第 3 页选择 **Zoom → 退出后延迟（例如 2.0 秒）→ 阶段峰值**，然后保存；延迟为 0 秒时，退出 Zoom 就结算。
+v1.1.1 已在 PA01 上获得菜单使用正常的实机反馈。菜单增加整行明暗反差和箭头，保存／退出按钮也有明显选中状态；同时保留有效峰值，无数据时等待回传，并标明缺测或延后读数。想取 Zoom 内和退出后一段时间的最高值，请在第 3 页选择 **Zoom → 退出后延迟（例如 2.0 秒）→ 阶段峰值**，然后保存；延迟为 0 秒时，退出 Zoom 就结算。
 
 **按屏幕选择一个包，不叠加安装：**
 
 | 屏幕 | 机型 | 下载 |
 | --- | --- | --- |
-| 彩屏 | PA01、V12 / MAX、V15 系列、V16、TX16S（含 MK3）、TX15、GX15、PL18 / EV / U、T15 / Pro / T16 / T18、X10 / X12S | `DLGDash-Color-v1.1.zip` |
-| 黑白屏 | X9D / X9E、GX12、Zorro、V14、T14、Boxer、Pocket、TX12、T12 / T20 / T-Pro / T-Lite、X7 / X9 Lite / X-Lite | `DLGDash-Monochrome-v1.1.zip` |
+| 彩屏 | PA01、V12 / MAX、V15 系列、V16、TX16S（含 MK3）、TX15、GX15、PL18 / EV / U、T15 / Pro / T16 / T18、X10 / X12S | `DLGDash-Color-v1.1.1.zip` |
+| 黑白屏 | X9D / X9E、GX12、Zorro、V14、T14、Boxer、Pocket、TX12、T12 / T20 / T-Pro / T-Lite、X7 / X9 Lite / X-Lite | `DLGDash-Monochrome-v1.1.1.zip` |
 
 黑白屏包去掉彩屏资源以节省存储；Lua 运行内存优化也已包含。Zorro 不再需要单独的机型包。
 
 新增机型属于实验适配；[完整机型表及首次地面测试步骤](docs/RADIOS.md)。未列出的不同屏幕和新架构机型暂不保证可用。
 
-v1.1 覆盖 46 个固件机型标识，新增 TX16S MK3 的 800×480 大屏布局和大号中文，并纳入 GX15、HelloRadio V15 / V12 MAX / V14 LCD 等机型。保留 V16 绘图兼容、黑白屏设置内存及保存修复。旧版用户请先备份、更新全部插件文件并清理旧编译缓存，再重启复测；[发布页有完整升级步骤](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1)。不要求先刷 EdgeTX 或 ELRS 固件。
+v1.1 覆盖 46 个固件机型标识，新增 TX16S MK3 的 800×480 大屏布局和大号中文，并纳入 GX15、HelloRadio V15 / V12 MAX / V14 LCD 等机型。保留 V16 绘图兼容、黑白屏设置内存及保存修复。旧版用户请先备份、更新全部插件文件并清理旧编译缓存，再重启复测；[发布页有完整升级步骤](https://github.com/SailTechnology/DLGDash/releases/tag/v1.1.1)。不要求先刷 EdgeTX 或 ELRS 固件。
 
 ## 选择你的遥控器
 
 | 遥控器 | 安装到哪里 | 当前状态 |
 | --- | --- | --- |
-| PA01 | 彩屏主屏，添加 DLGDash 控件 | 有前期实机反馈，更新后需复查 |
+| PA01 | 彩屏主屏，添加 DLGDash 控件 | v1.1.1 菜单实机使用反馈正常 |
 | HelloRadio V16 | 彩屏主屏，添加 DLGDash 控件 | 2.10.1 兼容修复，待实机复测 |
 | HelloRadio V12 | 320×240 彩屏主屏，滚轮操作 | 实验适配，待实机验收 |
 | FrSky X9D / X9D Plus / Plus 2019 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
 | RadioMaster GX12 | 模型的 Display 页面，选择 Script → DLG | 实验适配 |
 | RadioMaster Zorro | 模型的 Display 页面，选择 Script → DLG | 新增旧版 EdgeTX 兼容测试 |
-| Jumper T14 | 模型的 Display 页面，选择 Script → DLG | 用户反馈 beta.4 基本正常，v1.1 仍需复查 |
+| Jumper T14 | 模型的 Display 页面，选择 Script → DLG | 用户反馈 beta.4 基本正常，新版仍需复查 |
 
 T14 使用黑白屏包；操作见[黑白屏安装教程](docs/INSTALL-MONO.md)。
 

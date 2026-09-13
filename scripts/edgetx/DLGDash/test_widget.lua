@@ -457,6 +457,14 @@ sim.nativeLabels = false
 
 -- Chinese labels use bundled raster glyphs even with English-only firmware fonts.
 editor = Settings.new(key, P.defaults(), function() end, function() end)
+for _, language in ipairs({ 0, 1 }) do
+  editor.config.language, editor.page = language, 1
+  for focus = 1, #editor.pages[1].fields + 4 do
+    editor.focus = focus
+    __begin("focus-" .. language .. "-" .. focus); Settings.run(editor, 0, nil, 320, 240); __end()
+  end
+end
+editor.focus = 1
 editor.config.language = 1
 for page in ipairs(editor.pages) do
   editor.page = page

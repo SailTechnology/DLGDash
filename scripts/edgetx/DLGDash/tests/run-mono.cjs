@@ -87,6 +87,16 @@ expose('__rect', () => {
   for (let i = 0; i < w; i++) { pixel(x + i, y, true); pixel(x + i, y + h - 1, true); }
   for (let i = 0; i < h; i++) { pixel(x, y + i, true); pixel(x + w - 1, y + i, true); } return 0;
 });
+expose('__fill', () => {
+  if (!image) return 0;
+  const [x, y, w, h] = [1, 2, 3, 4].map(num);
+  assert.equal(num(5), 0, 'Monochrome focus uses the native XOR fill');
+  for (let yy = y; yy < y + h; yy++) for (let xx = x; xx < x + w; xx++) {
+    const p = (yy * width + xx) * 4;
+    pixel(xx, yy, image.data[p] !== 0);
+  }
+  commands.push({ invert: [x, y, w, h] }); return 0;
+});
 expose('__pixmap', () => {
   if (!image) return 0;
   const file = str(3).replace('/WIDGETS/DLGDash/', ''), bmp = fs.readFileSync(runtimeFile(file));

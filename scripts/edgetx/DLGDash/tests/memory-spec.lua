@@ -10,7 +10,7 @@ UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND = 5, 6
 EVT_VIRTUAL_NEXT, EVT_VIRTUAL_PREV, EVT_VIRTUAL_ENTER, EVT_VIRTUAL_EXIT = 10, 11, 12, 13
 EVT_VIRTUAL_NEXT_PAGE, EVT_VIRTUAL_PREV_PAGE = 14, 15
 local function noop() end
-lcd = { clear = noop, drawText = noop, drawPixmap = noop, drawLine = noop, drawRectangle = noop }
+lcd = { clear = noop, drawText = noop, drawPixmap = noop, drawLine = noop, drawRectangle = noop, drawFilledRectangle = noop }
 function getVersion() return legacy and "2.7.1" or "2.11.3", "zorro", 2, legacy and 7 or 11, 1, "EdgeTX" end
 function getTime() return clock end
 function getFlightMode(i) return i or 0, i == 2 and "Zoom" or "Cruise" end
